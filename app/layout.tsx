@@ -3,20 +3,25 @@ import localFont from "next/font/local";
 import React from "react";
 import "./globals.css";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+const inter = localFont({
+  src: "./fonts/InterVF.woff",
+  variable: "--font-inter",
+  weight: "100 200 300 400 500 600 700 800 900",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+
+const spaceGrotesk = localFont({
+  src: "./fonts/SpaceGroteskVF.woff",
+  variable: "--font-space-grotesk",
+  weight: "100 200 300 400 500 600 700",
 });
 
 export const metadata: Metadata = {
   title: "MuseFlow",
-  description: "Stack Overflow for rhythm gaming.",
+  description:
+    "A community-driven platform for rhythm game related stuff. Get help, share knowledge, and collaborate with rhythm gamers around the world. Explore topics in rhythm gaming, mapping, and more.",
+  icons: {
+    icon: "/images/site-logo.svg",
+  },
 };
 
 export default function RootLayout({
@@ -27,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.className} ${spaceGrotesk.variable} antialiased`}
       >
         {children}
       </body>
