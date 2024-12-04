@@ -23,12 +23,12 @@ export const sidebarLinks = [
   },
   {
     imgURL: "/icons/tag.svg",
-    route: ROUTES.TAGS,
+    route: ROUTES.TAGS("1"),
     label: "Tags",
   },
   {
     imgURL: "/icons/user.svg",
-    route: ROUTES.PROFILE,
+    route: ROUTES.PROFILE("1"),
     label: "Profile",
   },
   {
