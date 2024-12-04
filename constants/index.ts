@@ -19,7 +19,7 @@ export const sidebarLinks = [
   {
     imgURL: "/icons/suitcase.svg",
     route: ROUTES.MAPPERS,
-    label: "Find Jobs",
+    label: "Maps",
   },
   {
     imgURL: "/icons/tag.svg",
@@ -34,6 +34,6 @@ export const sidebarLinks = [
   {
     imgURL: "/icons/question.svg",
     route: ROUTES.POST,
-    label: "Ask a question",
+    label: "Posts",
   },
 ];

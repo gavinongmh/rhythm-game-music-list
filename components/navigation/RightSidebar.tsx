@@ -15,7 +15,7 @@ const hotPosts = [
 ];
 
 const popularTags = [
-  { _id: "1", name: "Idea", questions: 100 },
+  { _id: "1", name: "Suggestion", questions: 100 },
   { _id: "2", name: "Mapping", questions: 200 },
   { _id: "3", name: "Gameplay", questions: 150 },
   { _id: "4", name: "Bug", questions: 50 },
