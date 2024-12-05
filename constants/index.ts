@@ -33,7 +33,7 @@ export const sidebarLinks = [
   },
   {
     imgURL: "/icons/question.svg",
-    route: ROUTES.POST,
+    route: ROUTES.POST("1"),
     label: "Posts",
   },
 ];

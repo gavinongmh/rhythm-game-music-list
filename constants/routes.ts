@@ -7,7 +7,7 @@ const ROUTES = {
   MAPPERS: "/mappers",
   TAGS: (id: string) => `/tags/${id}`,
   PROFILE: (id: string) => `/profile/${id}`,
-  POST: "/post",
+  POST: (id: string) => `/post/${id}`,
 };
 
 export default ROUTES;

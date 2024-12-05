@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import PostCard from "@/components/cards/PostCard";
 import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
@@ -11,9 +12,14 @@ const posts = [
     description: "I want to learn React, can anyone help me?",
     tags: [
       { _id: "1", name: "Suggestion" },
-      { _id: "2", name: "JavaScript" },
+      { _id: "2", name: "React" },
     ],
-    author: { _id: "1", name: "John Doe" },
+    author: {
+      _id: "1",
+      name: "John Doe",
+      image:
+        "https://media.tenor.com/spyi3PtUrLYAAAAe/muse-swipr-museswipr.png",
+    },
     upvotes: 10,
     answers: 5,
     views: 100,
@@ -27,7 +33,12 @@ const posts = [
       { _id: "1", name: "Bug" },
       { _id: "2", name: "JavaScript" },
     ],
-    author: { _id: "1", name: "John Doe" },
+    author: {
+      _id: "1",
+      name: "John Doe",
+      image:
+        "https://media.tenor.com/spyi3PtUrLYAAAAe/muse-swipr-museswipr.png",
+    },
     upvotes: 10,
     answers: 5,
     views: 100,
@@ -63,7 +74,7 @@ const Home = async ({ searchParams }: SearchParams) => {
           className="primary-gradient min-h-[46px] px-4 py-3 !text-light-900"
           asChild
         >
-          <Link href={ROUTES.POST}>Post something!</Link>
+          <Link href={ROUTES.POST("1")}>Post something!</Link>
         </Button>
       </section>
       <section className="mt-11">
@@ -77,7 +88,7 @@ const Home = async ({ searchParams }: SearchParams) => {
       <HomeFilter />
       <div className="mt-10 flex w-full flex-col gap-6">
         {filteredPosts.map((post) => (
-          <h1 key={post._id}>{post.title}</h1>
+          <PostCard key={post._id} post={post} />
         ))}
       </div>
     </>
