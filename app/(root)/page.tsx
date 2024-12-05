@@ -1,15 +1,16 @@
 import Link from "next/link";
 
+import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
 const posts = [
   {
     _id: "1",
-    title: "How to learn React?",
+    title: "How to learn React (Suggestion)?",
     description: "I want to learn React, can anyone help me?",
     tags: [
-      { _id: "1", name: "React" },
+      { _id: "1", name: "Suggestion" },
       { _id: "2", name: "JavaScript" },
     ],
     author: { _id: "1", name: "John Doe" },
@@ -20,10 +21,10 @@ const posts = [
   },
   {
     _id: "2",
-    title: "How to learn JavaScript?",
+    title: "How to learn JavaScript? (Bug)",
     description: "I want to learn JavaScript, can anyone help me?",
     tags: [
-      { _id: "1", name: "React" },
+      { _id: "1", name: "Bug" },
       { _id: "2", name: "JavaScript" },
     ],
     author: { _id: "1", name: "John Doe" },
@@ -38,11 +39,21 @@ interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
 const Home = async ({ searchParams }: SearchParams) => {
-  const { query = "" } = await searchParams;
+  const { query = "", filter = "" } = await searchParams;
 
-  const filteredPosts = posts.filter((post) =>
-    post.title.toLowerCase().includes(query?.toLowerCase())
-  );
+  const filteredPosts = posts.filter((post) => {
+    // Match query against the title
+    const matchesQuery = post.title.toLowerCase().includes(query.toLowerCase());
+
+    // Match filter against tags or author name, adjust logic as needed
+    const matchesFilter = filter
+      ? post.tags.some(
+          (tag) => tag.name.toLowerCase() === filter.toLowerCase()
+        ) || post.author.name.toLowerCase() === filter.toLowerCase()
+      : true; // If no filter is provided, include all questions
+
+    return matchesQuery && matchesFilter;
+  });
   return (
     <>
       <section className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -63,6 +74,7 @@ const Home = async ({ searchParams }: SearchParams) => {
           otherClasses="flex-1"
         />
       </section>
+      <HomeFilter />
       <div className="mt-10 flex w-full flex-col gap-6">
         {filteredPosts.map((post) => (
           <h1 key={post._id}>{post.title}</h1>
