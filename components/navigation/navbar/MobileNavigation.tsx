@@ -46,9 +46,7 @@ const MobileNavigation = () => {
           </p>
         </Link>
 
-        <div
-          className="flex h-[calc(100vh-80px)] flex-col justify-between overflow-y-auto" /* Missing no-scrollbar but apparently that class doesn't exist.. */
-        >
+        <div className="no-scrollbar flex h-[calc(100vh-80px)] flex-col justify-between overflow-y-auto">
           <SheetClose asChild>
             <section className="flex h-full flex-col gap-6 pt-16">
               <NavLinks isMobileNav />
