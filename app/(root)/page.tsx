@@ -74,7 +74,7 @@ const Home = async ({ searchParams }: SearchParams) => {
           className="primary-gradient min-h-[46px] px-4 py-3 !text-light-900"
           asChild
         >
-          <Link href={ROUTES.POST("1")}>Post something!</Link>
+          <Link href={ROUTES.MAKE_POST}>Make a Post</Link>
         </Button>
       </section>
       <section className="mt-11">
