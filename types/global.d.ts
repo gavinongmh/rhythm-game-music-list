@@ -16,6 +16,6 @@ interface Post {
   author: Author;
   createdAt: Date;
   upvotes: number;
-  answers: number;
+  comments: number;
   views: number;
 }

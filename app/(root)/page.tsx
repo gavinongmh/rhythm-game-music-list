@@ -9,7 +9,7 @@ const posts = [
   {
     _id: "1",
     title: "How to learn React (Suggestion)?",
-    description: "I want to learn React, can anyone help me?",
+    content: "I want to learn React, can anyone help me?",
     tags: [
       { _id: "1", name: "Suggestion" },
       { _id: "2", name: "React" },
@@ -21,14 +21,14 @@ const posts = [
         "https://media.tenor.com/spyi3PtUrLYAAAAe/muse-swipr-museswipr.png",
     },
     upvotes: 10,
-    answers: 5,
+    comments: 5,
     views: 100,
     createdAt: new Date(),
   },
   {
     _id: "2",
     title: "How to learn JavaScript? (Bug)",
-    description: "I want to learn JavaScript, can anyone help me?",
+    content: "I want to learn JavaScript, can anyone help me?",
     tags: [
       { _id: "1", name: "Bug" },
       { _id: "2", name: "JavaScript" },
@@ -40,7 +40,7 @@ const posts = [
         "https://media.tenor.com/spyi3PtUrLYAAAAe/muse-swipr-museswipr.png",
     },
     upvotes: 10,
-    answers: 5,
+    comments: 5,
     views: 100,
     createdAt: new Date(),
   },

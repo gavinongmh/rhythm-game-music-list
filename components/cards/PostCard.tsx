@@ -12,7 +12,7 @@ interface Props {
 }
 
 const PostCard = ({
-  post: { _id, title, tags, author, createdAt, upvotes, answers, views },
+  post: { _id, title, tags, author, createdAt, upvotes, comments, views },
 }: Props) => {
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11">
@@ -53,9 +53,9 @@ const PostCard = ({
           />
           <Metric
             imgUrl="/icons/message.svg"
-            alt="answers"
-            value={answers}
-            title=" Answers"
+            alt="comments"
+            value={comments}
+            title=" Comments"
             textStyles="small-medium text-dark400_light800"
           />
           <Metric
