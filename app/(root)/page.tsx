@@ -61,7 +61,7 @@ const Home = async ({ searchParams }: SearchParams) => {
       ? post.tags.some(
           (tag) => tag.name.toLowerCase() === filter.toLowerCase()
         ) || post.author.name.toLowerCase() === filter.toLowerCase()
-      : true; // If no filter is provided, include all questions
+      : true; // If no filter is provided, include all posts
 
     return matchesQuery && matchesFilter;
   });

@@ -15,11 +15,11 @@ const hotPosts = [
 ];
 
 const popularTags = [
-  { _id: "1", name: "Suggestion", questions: 100 },
-  { _id: "2", name: "Mapping", questions: 200 },
-  { _id: "3", name: "Gameplay", questions: 150 },
-  { _id: "4", name: "Bug", questions: 50 },
-  { _id: "5", name: "Feedback", questions: 75 },
+  { _id: "1", name: "Suggestion", posts: 100 },
+  { _id: "2", name: "Mapping", posts: 200 },
+  { _id: "3", name: "Gameplay", posts: 150 },
+  { _id: "4", name: "Bug", posts: 50 },
+  { _id: "5", name: "Feedback", posts: 75 },
 ];
 
 const RightSidebar = () => {
@@ -52,12 +52,12 @@ const RightSidebar = () => {
       <div className="mt-16">
         <h3 className="h3-bold text-dark200_light900">Popular Tags</h3>
         <div className="mt-7 flex flex-col gap-4">
-          {popularTags.map(({ _id, name, questions }) => (
+          {popularTags.map(({ _id, name, posts: posts }) => (
             <TagCard
               key={_id}
               _id={_id}
               name={name}
-              questions={questions}
+              posts={posts}
               showCount
               compact
             />

@@ -19,6 +19,6 @@ const CommentSchema = new Schema<IComment>(
   { timestamps: true }
 );
 
-const Comment = models?.Account || model<IComment>("Account", CommentSchema);
+const Comment = models?.Comment || model<IComment>("Comment", CommentSchema);
 
 export default Comment;

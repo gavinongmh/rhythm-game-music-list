@@ -1,9 +1,9 @@
-import { model, models, Schema, Types } from "mongoose";
+// import { model, models, Schema, Types } from "mongoose";
 
-export interface IModel {}
+// export interface IModel {}
 
-const ModelSchema = new Schema<IModel>({}, { timestamps: true });
+// const ModelSchema = new Schema<IModel>({}, { timestamps: true });
 
-const Model = models?.Account || model<IModel>("Account", ModelSchema);
+// const Model = models?.Model || model<IModel>("Model", ModelSchema);
 
-export default Model;
+// export default Model;
