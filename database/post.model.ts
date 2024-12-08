@@ -1,15 +1,17 @@
-import { model, models, Schema, Types } from "mongoose";
+import { Schema, models, model, Types, Document } from "mongoose";
 
 export interface IPost {
   title: string;
   content: string;
   tags: Types.ObjectId[];
   views: number;
+  comments: number;
   upvotes: number;
   downvotes: number;
-  comments: number;
   author: Types.ObjectId;
 }
+
+export interface IPostDoc extends IPost, Document {}
 
 const PostSchema = new Schema<IPost>(
   {
@@ -17,9 +19,9 @@ const PostSchema = new Schema<IPost>(
     content: { type: String, required: true },
     tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
     views: { type: Number, default: 0 },
+    comments: { type: Number, default: 0 },
     upvotes: { type: Number, default: 0 },
     downvotes: { type: Number, default: 0 },
-    comments: { type: Number, default: 0 },
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
