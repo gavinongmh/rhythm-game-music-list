@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+// Typescript is the validation for developers.
+// Think of Zod validation as the Front end validation for the users
+
 export const SignInSchema = z.object({
   email: z
     .string()
@@ -66,4 +69,20 @@ export const MakePostSchema = z.object({
     )
     .min(1, { message: "At least one tag is required." })
     .max(3, { message: "Cannot add more than 3 tags." }),
+});
+
+export const UserSchema = z.object({
+  name: z.string().min(1, { message: "Name is required." }),
+  username: z
+    .string()
+    .min(3, { message: "Username must be at least 3 characters long." }),
+  email: z.string().email({ message: "Please provide a valid email address." }),
+  bio: z.string().optional(),
+  image: z.string().url({ message: "Please provide a valid URL." }).optional(),
+  location: z.string().optional(),
+  portfolio: z
+    .string()
+    .url({ message: "Please provide a valid URL." })
+    .optional(),
+  reputation: z.number().optional(),
 });
