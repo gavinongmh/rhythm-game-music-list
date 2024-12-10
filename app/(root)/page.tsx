@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { auth } from "@/auth";
 import PostCard from "@/components/cards/PostCard";
 import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
@@ -8,7 +9,6 @@ import ROUTES from "@/constants/routes";
 import { api } from "@/lib/api";
 import handleError from "@/lib/handlers/error";
 import dbConnect from "@/lib/mongoose";
-import { auth } from "@/auth";
 
 const posts = [
   {
@@ -63,11 +63,8 @@ interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
 const Home = async ({ searchParams }: SearchParams) => {
-  //const users = await test();
-  //console.log(users);
-  const session = await auth();
-
-  console.log("Session: ", session);
+  // const users = await test();
+  // console.log(users);
 
   const { query = "", filter = "" } = await searchParams;
 
