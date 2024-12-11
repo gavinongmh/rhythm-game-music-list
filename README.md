@@ -15,7 +15,7 @@
   <h3 align="center">BaseFlow Project Starter</h3>
 
    <div align="center">
-     Build this project step by step with our detailed course on <a href="https://www.jsmastery.pro" target="_blank"><b>JavaScript Mastery PRO</b></a> Website. Join the JSM PRO family!
+     A template project designed to kickstart your full-stack applications with a modern tech stack.
     </div>
 </div>
 
@@ -25,16 +25,6 @@
 2. ⚙️ [Tech Stack](#tech-stack)
 3. 🔋 [Features](#features)
 4. 🤸 [Quick Start](#quick-start)
-
-## 🚨 Course
-
-This repository contains the code corresponding to an in-depth course available on our <a href="https://jsmastery.pro/" target="_blank"><b>JavaScript Mastery Pro Website</b></a>.
-
-If you prefer visual learning, this is the perfect resource for you. Follow our course to learn how to build projects like these step-by-step in a beginner-friendly manner
-
-<a href="https://www.jsmastery.pro/ultimate-next-course" target="_blank">
-  <img src="https://github.com/user-attachments/assets/54ef6cd0-1f00-4989-a6a5-3f77ca3f68a2" style="width: 150px; height: auto;" />
-</a>
 
 ## <a name="introduction">🤖 Introduction</a>
 
