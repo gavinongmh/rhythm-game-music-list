@@ -1,6 +1,6 @@
 <div align="center">
   <br />
-      <img src="./public/banner.png" alt="Project Banner">
+      <img src="./public/banner.png" alt="Project Banner" >
   <br />
 
   <div>
@@ -41,8 +41,6 @@ BaseFlow leverages the following technologies:
 - **[Tailwind CSS](https://tailwindcss.com/):** Utility-first CSS framework.
 - **[MongoDB](https://www.mongodb.com/):** Flexible and scalable NoSQL database.
 - **[ShadCN UI](https://ui.shadcn.dev/):** Modern, reusable UI components.
-
----
 
 ## <a name="features">🔋 Features</a>
 
@@ -97,12 +95,6 @@ Create a new file named `.env` in the root of your project and add the following
 # Mongodb
 MONGODB_URI=
 
-# OpenAI
-OPENAI_API_KEY=
-
-# Rapid API
-NEXT_PUBLIC_RAPID_API_KEY=
-
 # Auth
 AUTH_GOOGLE_ID=
 AUTH_GOOGLE_SECRET=
@@ -111,12 +103,6 @@ AUTH_GITHUB_SECRET=
 AUTH_SECRET=
 NEXTAUTH_URL=
 
-# Tiny Editor
-NEXT_PUBLIC_TINY_EDITOR_API_KEY=
-
-NEXT_PUBLIC_SERVER_URL=
-
-NODE_ENV=
 ```
 
 Replace the placeholder values with your actual credentials. You can obtain these credentials by signing up on the respective websites
