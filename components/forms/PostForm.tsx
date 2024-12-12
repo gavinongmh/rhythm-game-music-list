@@ -2,12 +2,17 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MDXEditorMethods } from "@mdxeditor/editor";
+import { ReloadIcon } from "@radix-ui/react-icons";
 import dynamic from "next/dynamic";
-import React, { useRef } from "react";
+import { useRouter } from "next/navigation";
+import React, { useRef, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { MakePostSchema as MakePostSchema } from "@/lib/validations";
+import ROUTES from "@/constants/routes";
+import { toast } from "@/hooks/use-toast";
+import { makePost } from "@/lib/actions/post.action";
+import { MakePostSchema } from "@/lib/validations";
 
 import TagCard from "../cards/TagCard";
 import { Button } from "../ui/button";
@@ -28,7 +33,10 @@ const Editor = dynamic(() => import("@/components/editor"), {
 });
 
 const PostForm = () => {
+  const router = useRouter();
   const editorRef = useRef<MDXEditorMethods>(null);
+  const [isPending, startTransition] = useTransition();
+
   const form = useForm<z.infer<typeof MakePostSchema>>({
     resolver: zodResolver(MakePostSchema),
     defaultValues: {
@@ -76,8 +84,26 @@ const PostForm = () => {
     }
   };
 
-  const handleMakePost = (data: z.infer<typeof MakePostSchema>) => {
-    console.log(data);
+  const handleMakePost = async (data: z.infer<typeof MakePostSchema>) => {
+    startTransition(async () => {
+      const result = await makePost(data);
+
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: "Post created successfully",
+        });
+        if (result.data) {
+          router.push(ROUTES.POST(result.data._id));
+        } else {
+          toast({
+            title: `Error ${result.status}`,
+            description: result.error?.message || "Something went wrong",
+            variant: "destructive",
+          });
+        }
+      }
+    });
   };
   return (
     <Form {...form}>
@@ -172,9 +198,17 @@ const PostForm = () => {
         <div className="mt-16 flex justify-end">
           <Button
             type="submit"
+            disabled={isPending}
             className="primary-gradient w-fit !text-light-900"
           >
-            Make Post
+            {isPending ? (
+              <>
+                <ReloadIcon className="mr-2 size-4 animate-spin" />
+                <span>Submitting</span>
+              </>
+            ) : (
+              <>Make Post</>
+            )}
           </Button>
         </div>
       </form>

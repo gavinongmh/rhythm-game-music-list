@@ -8,7 +8,7 @@ const ROUTES = {
   MAKE_POST: "make-post",
   TAGS: (id: string) => `/tags/${id}`,
   PROFILE: (id: string) => `/profile/${id}`,
-  POST: (id: string) => `/post/${id}`,
+  POST: (id: string) => `/posts/${id}`,
   SIGN_IN_WITH_OAUTH: "signin-with-oauth",
 };
 
