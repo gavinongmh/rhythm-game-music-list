@@ -75,8 +75,8 @@ Make sure you have the following installed on your machine:
 **Cloning the Repository**
 
 ```bash
-git clone https://github.com/JavaScript-Mastery-Pro/devflow-v2-record.git
-cd devflow-v2-record
+git clone https://github.com/gavinongmh/baseflow.git
+cd baseflow
 ```
 
 **Installation**
