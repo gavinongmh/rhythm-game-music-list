@@ -16,8 +16,16 @@ interface AuthCredentials {
   password: string;
 }
 
-interface CreatePostParams {
+interface MakePostParams {
   title: string;
   content: string;
   tags: string[];
+}
+
+interface EditPostParams extends MakePostParams {
+  postId: string;
+}
+
+interface GetPostParams {
+  postId: string;
 }

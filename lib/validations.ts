@@ -128,3 +128,11 @@ export const SignInWithOAuthSchema = z.object({
     image: z.string().url("Invalid image URL").optional(),
   }),
 });
+
+export const EditPostSchema = MakePostSchema.extend({
+  postId: z.string().min(1, { message: "Post ID is required. " }),
+});
+
+export const GetPostSchema = z.object({
+  postId: z.string().min(1, { message: "Post ID is required." }),
+});

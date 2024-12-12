@@ -11,7 +11,7 @@ import { z } from "zod";
 
 import ROUTES from "@/constants/routes";
 import { toast } from "@/hooks/use-toast";
-import { makePost } from "@/lib/actions/post.action";
+import { editPost, makePost } from "@/lib/actions/post.action";
 import { MakePostSchema } from "@/lib/validations";
 
 import TagCard from "../cards/TagCard";
@@ -32,7 +32,12 @@ const Editor = dynamic(() => import("@/components/editor"), {
   ssr: false,
 });
 
-const PostForm = () => {
+interface Params {
+  post?: Post;
+  isEdit?: boolean;
+}
+
+const PostForm = ({ post, isEdit = false }: Params) => {
   const router = useRouter();
   const editorRef = useRef<MDXEditorMethods>(null);
   const [isPending, startTransition] = useTransition();
@@ -40,9 +45,9 @@ const PostForm = () => {
   const form = useForm<z.infer<typeof MakePostSchema>>({
     resolver: zodResolver(MakePostSchema),
     defaultValues: {
-      title: "",
-      content: "",
-      tags: [],
+      title: post?.title || "",
+      content: post?.content || "",
+      tags: post?.tags.map((tag) => tag.name) || [],
     },
   });
 
@@ -86,6 +91,26 @@ const PostForm = () => {
 
   const handleMakePost = async (data: z.infer<typeof MakePostSchema>) => {
     startTransition(async () => {
+      if (isEdit && post) {
+        const result = await editPost({ postId: post?._id, ...data });
+        if (result.success) {
+          toast({
+            title: "Success",
+            description: "Post updated successfully",
+          });
+          if (result.data) {
+            router.push(ROUTES.POST(result.data._id));
+          } else {
+            toast({
+              title: `Error ${result.status}`,
+              description: result.error?.message || "Something went wrong",
+              variant: "destructive",
+            });
+          }
+        }
+
+        return;
+      }
       const result = await makePost(data);
 
       if (result.success) {
@@ -207,7 +232,7 @@ const PostForm = () => {
                 <span>Submitting</span>
               </>
             ) : (
-              <>Make Post</>
+              <>{isEdit ? "Edit" : "Make Post"}</>
             )}
           </Button>
         </div>

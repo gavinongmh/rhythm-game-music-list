@@ -4,7 +4,7 @@ import React from "react";
 import { auth } from "@/auth";
 import PostForm from "@/components/forms/PostForm";
 
-const Post = async () => {
+const MakePost = async () => {
   const session = await auth();
   if (!session) return redirect("/sign-in");
   return (
@@ -17,4 +17,4 @@ const Post = async () => {
   );
 };
 
-export default Post;
+export default MakePost;
