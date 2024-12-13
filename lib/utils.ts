@@ -1,5 +1,8 @@
+import { create } from "domain";
+
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { date } from "zod";
 
 import { techMap } from "./techMap";
 
@@ -15,7 +18,8 @@ export const getDeviconClassName = (techName: string) => {
     : "devicon-devicon-plain";
 };
 
-export const getTimeStamp = (date: Date) => {
+export const getTimeStamp = (createdAt: Date) => {
+  const date = new Date(createdAt);
   const now = new Date();
   const secondsAgo = Math.floor((now.getTime() - date.getTime()) / 1000);
 

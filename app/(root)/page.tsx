@@ -5,47 +5,7 @@ import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
-
-const posts = [
-  {
-    _id: "1",
-    title: "How to learn React (Suggestion)?",
-    content: "I want to learn React, can anyone help me?",
-    tags: [
-      { _id: "1", name: "Suggestion" },
-      { _id: "2", name: "React" },
-    ],
-    author: {
-      _id: "1",
-      name: "John Doe",
-      image:
-        "https://media.tenor.com/spyi3PtUrLYAAAAe/muse-swipr-museswipr.png",
-    },
-    upvotes: 10,
-    comments: 5,
-    views: 100,
-    createdAt: new Date(),
-  },
-  {
-    _id: "2",
-    title: "How to learn JavaScript? (Bug)",
-    content: "I want to learn JavaScript, can anyone help me?",
-    tags: [
-      { _id: "1", name: "Bug" },
-      { _id: "2", name: "JavaScript" },
-    ],
-    author: {
-      _id: "1",
-      name: "John Doe",
-      image:
-        "https://media.tenor.com/spyi3PtUrLYAAAAe/muse-swipr-museswipr.png",
-    },
-    upvotes: 10,
-    comments: 5,
-    views: 100,
-    createdAt: new Date(),
-  },
-];
+import { getPosts } from "@/lib/actions/post.action";
 
 // const test = async () => {
 //   try {
@@ -62,21 +22,17 @@ const Home = async ({ searchParams }: SearchParams) => {
   // const users = await test();
   // console.log(users);
 
-  const { query = "", filter = "" } = await searchParams;
+  const { page, pageSize, query, filter } = await searchParams;
 
-  const filteredPosts = posts.filter((post) => {
-    // Match query against the title
-    const matchesQuery = post.title.toLowerCase().includes(query.toLowerCase());
-
-    // Match filter against tags or author name, adjust logic as needed
-    const matchesFilter = filter
-      ? post.tags.some(
-          (tag) => tag.name.toLowerCase() === filter.toLowerCase()
-        ) || post.author.name.toLowerCase() === filter.toLowerCase()
-      : true; // If no filter is provided, include all posts
-
-    return matchesQuery && matchesFilter;
+  const { success, data, error } = await getPosts({
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+    query: query || "",
+    filter: filter || "",
   });
+
+  const { posts } = data || {};
+
   return (
     <>
       <section className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -98,11 +54,23 @@ const Home = async ({ searchParams }: SearchParams) => {
         />
       </section>
       <HomeFilter />
-      <div className="mt-10 flex w-full flex-col gap-6">
-        {filteredPosts.map((post) => (
-          <PostCard key={post._id} post={post} />
-        ))}
-      </div>
+      {success ? (
+        <div className="mt-10 flex w-full flex-col gap-6">
+          {posts && posts.length > 0 ? (
+            posts.map((post) => <PostCard key={post._id} post={post} />)
+          ) : (
+            <div className="mt-10 flex w-full items-center justify-center">
+              <p className="text-dark400_light700">No posts found</p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="mt-10 flex w-full items-center justify-center">
+          <p className="text-dark400_light700">
+            {error?.message || "Failed to fetch posts"}
+          </p>
+        </div>
+      )}
     </>
   );
 };

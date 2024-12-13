@@ -1,18 +1,23 @@
 "use server";
 
-import mongoose from "mongoose";
+import mongoose, { FilterQuery } from "mongoose";
 
-import Post from "@/database/post.model";
+import Post, { IPostDoc } from "@/database/post.model";
 import TagPost from "@/database/tag-post.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
 
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { EditPostSchema, GetPostSchema, MakePostSchema } from "../validations";
+import {
+  EditPostSchema,
+  GetPostSchema,
+  MakePostSchema,
+  PaginatedSearchParamsSchema,
+} from "../validations";
 
 export async function makePost(
   params: MakePostParams
-): Promise<ActionResponse<Post>> {
+): Promise<ActionResponse<IPostDoc>> {
   const validationResult = await action({
     params,
     schema: MakePostSchema,
@@ -34,11 +39,13 @@ export async function makePost(
       session,
     });
     if (!post) {
-      throw new Error("Failer to create post");
+      throw new Error("Failed to create post");
     }
 
     const tagIds: mongoose.Types.ObjectId[] = [];
     const tagPostDocuments = [];
+
+    console.log(`Tags Length: ${tags.length}`);
 
     for (const tag of tags) {
       const existingTag = await Tag.findOneAndUpdate(
@@ -52,15 +59,14 @@ export async function makePost(
         tag: existingTag._id,
         post: post._id,
       });
-
-      await TagPost.insertMany(tagPostDocuments, { session });
-
-      await Post.findByIdAndUpdate(
-        post._id,
-        { $push: { tags: { $each: tagIds } } },
-        { session }
-      );
     }
+    await TagPost.insertMany(tagPostDocuments, { session });
+
+    await Post.findByIdAndUpdate(
+      post._id,
+      { $push: { tags: { $each: tagIds } } },
+      { session }
+    );
 
     await session.commitTransaction();
 
@@ -75,7 +81,7 @@ export async function makePost(
 
 export async function editPost(
   params: EditPostParams
-): Promise<ActionResponse<Post>> {
+): Promise<ActionResponse<IPostDoc>> {
   const validationResult = await action({
     params,
     schema: EditPostSchema,
@@ -110,10 +116,14 @@ export async function editPost(
     }
 
     const tagsToAdd = tags.filter(
-      (tag) => !post.tags.includes(tag.toLowerCase())
+      (tag) =>
+        !post.tags.some((t: ITagDoc) =>
+          t.name.toLowerCase().includes(tag.toLowerCase())
+        )
     );
     const tagsToRemove = post.tags.filter(
-      (tag: ITagDoc) => !tags.includes(tag.name.toLowerCase())
+      (tag: ITagDoc) =>
+        !tags.some((t) => t.toLowerCase() === tag.name.toLowerCase())
     );
 
     const newTagDocuments = [];
@@ -121,7 +131,7 @@ export async function editPost(
     if (tagsToAdd.length > 0) {
       for (const tag of tagsToAdd) {
         const existingTag = await Tag.findOneAndUpdate(
-          { name: { $regex: new RegExp(`^${tag}$`, "i") } },
+          { name: { $regex: `^${tag}$`, $options: "i" } },
           { $setOnInsert: { name: tag }, $inc: { posts: 1 } },
           { upsert: true, new: true, session }
         );
@@ -129,7 +139,7 @@ export async function editPost(
         if (existingTag) {
           newTagDocuments.push({
             tag: existingTag._id,
-            post: post._id,
+            post: postId,
           });
 
           post.tags.push(existingTag._id);
@@ -152,7 +162,10 @@ export async function editPost(
       );
 
       post.tags = post.tags.filter(
-        (tagId: mongoose.Types.ObjectId) => !tagsToRemove.includes(tagId)
+        (tag: mongoose.Types.ObjectId) =>
+          !tagIdsToRemove.some((id: mongoose.Types.ObjectId) =>
+            id.equals(tag._id)
+          )
       );
     }
 
@@ -195,6 +208,73 @@ export async function getPost(
     }
 
     return { success: true, data: JSON.parse(JSON.stringify(post)) };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function getPosts(
+  params: PaginatedSearchParams
+): Promise<ActionResponse<{ posts: Post[]; isNext: boolean }>> {
+  const validationResult = await action({
+    params,
+    schema: PaginatedSearchParamsSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { page = 1, pageSize = 10, query, filter } = params;
+  const skip = (Number(page) - 1) * pageSize;
+  const limit = Number(pageSize);
+
+  const filterQuery: FilterQuery<typeof Post> = {};
+
+  if (filter === "recommended")
+    return { success: true, data: { posts: [], isNext: false } };
+
+  if (query) {
+    filterQuery.$or = [
+      { title: { $regex: new RegExp(query, "i") } },
+      { content: { $regex: new RegExp(query, "i") } },
+    ];
+  }
+
+  let sortCriteria = {};
+
+  switch (filter) {
+    case "newest":
+      sortCriteria = { createdAt: -1 };
+      break;
+    case "unanswered":
+      filterQuery.comments = 0;
+      sortCriteria = { createdAt: -1 };
+      break;
+    case "popular":
+      sortCriteria = { upvotes: -1 };
+      break;
+    default:
+      sortCriteria = { createdAt: -1 };
+      break;
+  }
+
+  try {
+    const totalPosts = await Post.countDocuments(filterQuery);
+    const posts = await Post.find(filterQuery)
+      .populate("tags", "name")
+      // .populate("author", "name image")
+      .lean()
+      .sort(sortCriteria)
+      .skip(skip)
+      .limit(limit);
+
+    const isNext = totalPosts > skip + posts.length;
+
+    return {
+      success: true,
+      data: { posts: JSON.parse(JSON.stringify(posts)), isNext },
+    };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
