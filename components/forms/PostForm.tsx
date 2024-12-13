@@ -99,7 +99,7 @@ const PostForm = ({ post, isEdit = false }: Params) => {
             description: "Post updated successfully",
           });
           if (result.data) {
-            router.push(ROUTES.POST(result.data._id));
+            router.push(ROUTES.POST(result.data._id as string));
           } else {
             toast({
               title: `Error ${result.status}`,
@@ -119,7 +119,7 @@ const PostForm = ({ post, isEdit = false }: Params) => {
           description: "Post created successfully",
         });
         if (result.data) {
-          router.push(ROUTES.POST(result.data._id));
+          router.push(ROUTES.POST(result.data._id as string));
         } else {
           toast({
             title: `Error ${result.status}`,

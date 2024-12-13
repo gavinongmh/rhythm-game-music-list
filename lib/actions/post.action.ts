@@ -263,7 +263,7 @@ export async function getPosts(
     const totalPosts = await Post.countDocuments(filterQuery);
     const posts = await Post.find(filterQuery)
       .populate("tags", "name")
-      // .populate("author", "name image")
+      .populate("author", "name image")
       .lean()
       .sort(sortCriteria)
       .skip(skip)

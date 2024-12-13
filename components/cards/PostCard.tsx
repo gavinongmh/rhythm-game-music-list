@@ -35,8 +35,8 @@ const PostCard = ({
       </div>
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
         <Metric
-          imgUrl={author.image}
-          alt={author.name}
+          imgUrl={author.image || "/icons/avatar.svg"}
+          alt={author.name || "authorName"}
           value={author.name}
           title={`• asked ${getTimeStamp(createdAt)}`}
           href={ROUTES.PROFILE(author._id)}

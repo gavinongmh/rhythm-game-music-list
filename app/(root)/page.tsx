@@ -6,6 +6,8 @@ import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
 import { getPosts } from "@/lib/actions/post.action";
+import DataRenderer from "@/components/DataRenderer";
+import { EMPTY_POST } from "@/constants/states";
 
 // const test = async () => {
 //   try {
@@ -54,23 +56,20 @@ const Home = async ({ searchParams }: SearchParams) => {
         />
       </section>
       <HomeFilter />
-      {success ? (
-        <div className="mt-10 flex w-full flex-col gap-6">
-          {posts && posts.length > 0 ? (
-            posts.map((post) => <PostCard key={post._id} post={post} />)
-          ) : (
-            <div className="mt-10 flex w-full items-center justify-center">
-              <p className="text-dark400_light700">No posts found</p>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="mt-10 flex w-full items-center justify-center">
-          <p className="text-dark400_light700">
-            {error?.message || "Failed to fetch posts"}
-          </p>
-        </div>
-      )}
+
+      <DataRenderer
+        success={success}
+        error={error}
+        data={posts}
+        empty={EMPTY_POST}
+        render={(posts) => (
+          <div className="mt-10 flex w-full flex-col gap-6">
+            {posts.map((post) => (
+              <PostCard key={post._id} post={post} />
+            ))}
+          </div>
+        )}
+      />
     </>
   );
 };
