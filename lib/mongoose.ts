@@ -4,6 +4,7 @@ import logger from "./logger";
 import "@/database";
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
+const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME as string;
 
 if (!MONGODB_URI) {
   throw new Error("MONGODB_URI is not defined");
@@ -34,7 +35,7 @@ const dbConnect = async (): Promise<Mongoose> => {
   if (!cached.promise) {
     cached.promise = mongoose
       .connect(MONGODB_URI, {
-        dbName: "museflow",
+        dbName: MONGODB_DB_NAME,
       })
       .then((result) => {
         logger.info("Connected to MongoDB");
