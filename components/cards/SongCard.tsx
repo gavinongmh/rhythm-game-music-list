@@ -8,10 +8,10 @@ import TagCard from "./TagCard";
 import Metric from "../Metric";
 
 interface Props {
-  post: Post;
+  post: Song;
 }
 
-const PostCard = ({
+const SongCard = ({
   post: { _id, title, tags, author, createdAt, upvotes, comments, views },
 }: Props) => {
   return (
@@ -71,4 +71,4 @@ const PostCard = ({
   );
 };
 
-export default PostCard;
+export default SongCard;

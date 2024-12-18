@@ -10,7 +10,7 @@ import { Badge } from "../ui/badge";
 interface Props {
   _id: string;
   name: string;
-  posts?: number;
+  songs?: number;
   showCount?: boolean;
   compact?: boolean;
   remove?: boolean;
@@ -21,7 +21,7 @@ interface Props {
 const TagCard = ({
   _id,
   name,
-  posts,
+  songs,
   showCount,
   compact,
   remove,
@@ -54,7 +54,7 @@ const TagCard = ({
         )}
       </Badge>
       {showCount && (
-        <p className="small-medium text-dark500_light700">{posts}</p>
+        <p className="small-medium text-dark500_light700">{songs}</p>
       )}
     </>
   );

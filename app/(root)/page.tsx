@@ -1,11 +1,11 @@
 import Link from "next/link";
 
-import PostCard from "@/components/cards/PostCard";
+import SongCard from "@/components/cards/SongCard";
 import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
-import { getPosts } from "@/lib/actions/post.action";
+import { getSongs } from "@/lib/actions/post.action";
 import DataRenderer from "@/components/DataRenderer";
 import { EMPTY_POST } from "@/constants/states";
 
@@ -26,32 +26,32 @@ const Home = async ({ searchParams }: SearchParams) => {
 
   const { page, pageSize, query, filter } = await searchParams;
 
-  const { success, data, error } = await getPosts({
+  const { success, data, error } = await getSongs({
     page: Number(page) || 1,
     pageSize: Number(pageSize) || 10,
     query: query || "",
     filter: filter || "",
   });
 
-  const { posts } = data || {};
+  const { songs } = data || {};
 
   return (
     <>
       <section className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
-        <h1 className="h1-bold text-dark100_light900">All Posts</h1>
+        <h1 className="h1-bold text-dark100_light900">All Songs</h1>
 
         <Button
           className="primary-gradient min-h-[46px] px-4 py-3 !text-light-900"
           asChild
         >
-          <Link href={ROUTES.MAKE_POST}>Make a Post</Link>
+          <Link href={ROUTES.MAKE_POST}>Make a Song</Link>
         </Button>
       </section>
       <section className="mt-11">
         <LocalSearch
           route="/"
           imgSrc="/icons/search.svg"
-          placeholder="Search posts..."
+          placeholder="Search songs..."
           otherClasses="flex-1"
         />
       </section>
@@ -60,12 +60,12 @@ const Home = async ({ searchParams }: SearchParams) => {
       <DataRenderer
         success={success}
         error={error}
-        data={posts}
+        data={songs}
         empty={EMPTY_POST}
-        render={(posts) => (
+        render={(songs) => (
           <div className="mt-10 flex w-full flex-col gap-6">
-            {posts.map((post) => (
-              <PostCard key={post._id} post={post} />
+            {songs.map((post) => (
+              <SongCard key={post._id} post={post} />
             ))}
           </div>
         )}

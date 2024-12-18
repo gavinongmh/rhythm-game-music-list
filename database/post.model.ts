@@ -1,6 +1,6 @@
 import { Schema, models, model, Types, Document } from "mongoose";
 
-export interface IPost {
+export interface ISong {
   title: string;
   content: string;
   tags: Types.ObjectId[];
@@ -11,9 +11,9 @@ export interface IPost {
   author: Types.ObjectId;
 }
 
-export interface IPostDoc extends IPost, Document {}
+export interface ISongDoc extends ISong, Document {}
 
-const PostSchema = new Schema<IPost>(
+const SongSchema = new Schema<ISong>(
   {
     title: { type: String, required: true },
     content: { type: String, required: true },
@@ -27,6 +27,6 @@ const PostSchema = new Schema<IPost>(
   { timestamps: true }
 );
 
-const Post = models?.Post || model<IPost>("Post", PostSchema);
+const Song = models?.Song || model<ISong>("Song", SongSchema);
 
-export default Post;
+export default Song;

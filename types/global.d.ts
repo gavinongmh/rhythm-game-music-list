@@ -9,7 +9,7 @@ interface Author {
   image: string;
 }
 
-interface Post {
+interface Song {
   _id: string;
   title: string;
   content: string;

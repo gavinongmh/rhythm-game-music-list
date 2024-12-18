@@ -13,7 +13,7 @@ export interface ICommentDoc extends IComment, Document {}
 const CommentSchema = new Schema<IComment>(
   {
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    post: { type: Schema.Types.ObjectId, ref: "Post", required: true },
+    post: { type: Schema.Types.ObjectId, ref: "Song", required: true },
     content: { type: String, required: true },
     upvotes: { type: Number, default: 0 },
     downvotes: { type: Number, default: 0 },

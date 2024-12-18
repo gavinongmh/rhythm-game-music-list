@@ -2,25 +2,25 @@
 
 import mongoose, { FilterQuery } from "mongoose";
 
-import Post, { IPostDoc } from "@/database/post.model";
-import TagPost from "@/database/tag-post.model";
+import Song, { ISongDoc } from "@/database/post.model";
+import TagSong from "@/database/tag-post.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
 
 import action from "../handlers/action";
 import handleError from "../handlers/error";
 import {
-  EditPostSchema,
-  GetPostSchema,
-  MakePostSchema,
+  EditSongSchema,
+  GetSongSchema,
+  MakeSongSchema,
   PaginatedSearchParamsSchema,
 } from "../validations";
 
-export async function makePost(
-  params: MakePostParams
-): Promise<ActionResponse<IPostDoc>> {
+export async function makeSong(
+  params: MakeSongParams
+): Promise<ActionResponse<ISongDoc>> {
   const validationResult = await action({
     params,
-    schema: MakePostSchema,
+    schema: MakeSongSchema,
     authorize: true,
   });
 
@@ -35,7 +35,7 @@ export async function makePost(
   session.startTransaction();
 
   try {
-    const [post] = await Post.create([{ title, content, author: userId }], {
+    const [post] = await Song.create([{ title, content, author: userId }], {
       session,
     });
     if (!post) {
@@ -43,26 +43,26 @@ export async function makePost(
     }
 
     const tagIds: mongoose.Types.ObjectId[] = [];
-    const tagPostDocuments = [];
+    const tagSongDocuments = [];
 
     console.log(`Tags Length: ${tags.length}`);
 
     for (const tag of tags) {
       const existingTag = await Tag.findOneAndUpdate(
         { name: { $regex: new RegExp(`^${tag}$`, "i") } },
-        { $setOnInsert: { name: tag }, $inc: { posts: 1 } },
+        { $setOnInsert: { name: tag }, $inc: { songs: 1 } },
         { upsert: true, new: true, session }
       );
 
       tagIds.push(existingTag._id);
-      tagPostDocuments.push({
+      tagSongDocuments.push({
         tag: existingTag._id,
         post: post._id,
       });
     }
-    await TagPost.insertMany(tagPostDocuments, { session });
+    await TagSong.insertMany(tagSongDocuments, { session });
 
-    await Post.findByIdAndUpdate(
+    await Song.findByIdAndUpdate(
       post._id,
       { $push: { tags: { $each: tagIds } } },
       { session }
@@ -79,12 +79,12 @@ export async function makePost(
   }
 }
 
-export async function editPost(
-  params: EditPostParams
-): Promise<ActionResponse<IPostDoc>> {
+export async function editSong(
+  params: EditSongParams
+): Promise<ActionResponse<ISongDoc>> {
   const validationResult = await action({
     params,
-    schema: EditPostSchema,
+    schema: EditSongSchema,
     authorize: true,
   });
 
@@ -99,10 +99,10 @@ export async function editPost(
   session.startTransaction();
 
   try {
-    const post = await Post.findById(postId).populate("tags");
+    const post = await Song.findById(postId).populate("tags");
 
     if (!post) {
-      throw new Error("Post not found");
+      throw new Error("Song not found");
     }
 
     if (post.author.toString() !== userId) {
@@ -132,7 +132,7 @@ export async function editPost(
       for (const tag of tagsToAdd) {
         const existingTag = await Tag.findOneAndUpdate(
           { name: { $regex: `^${tag}$`, $options: "i" } },
-          { $setOnInsert: { name: tag }, $inc: { posts: 1 } },
+          { $setOnInsert: { name: tag }, $inc: { songs: 1 } },
           { upsert: true, new: true, session }
         );
 
@@ -152,11 +152,11 @@ export async function editPost(
 
       await Tag.updateMany(
         { _id: { $in: tagIdsToRemove } },
-        { $inc: { posts: -1 } },
+        { $inc: { songs: -1 } },
         { session }
       );
 
-      await TagPost.deleteMany(
+      await TagSong.deleteMany(
         { tag: { $in: tagIdsToRemove }, post: postId },
         { session }
       );
@@ -170,7 +170,7 @@ export async function editPost(
     }
 
     if (newTagDocuments.length > 0) {
-      await TagPost.insertMany(newTagDocuments, { session });
+      await TagSong.insertMany(newTagDocuments, { session });
     }
 
     await post.save({ session });
@@ -185,12 +185,12 @@ export async function editPost(
   }
 }
 
-export async function getPost(
-  params: GetPostParams
-): Promise<ActionResponse<Post>> {
+export async function getSong(
+  params: GetSongParams
+): Promise<ActionResponse<Song>> {
   const validationResult = await action({
     params,
-    schema: GetPostSchema,
+    schema: GetSongSchema,
     authorize: true,
   });
 
@@ -201,10 +201,10 @@ export async function getPost(
   const { postId } = validationResult.params!;
 
   try {
-    const post = await Post.findById(postId).populate("tags");
+    const post = await Song.findById(postId).populate("tags");
 
     if (!post) {
-      throw new Error("Post not found");
+      throw new Error("Song not found");
     }
 
     return { success: true, data: JSON.parse(JSON.stringify(post)) };
@@ -213,9 +213,9 @@ export async function getPost(
   }
 }
 
-export async function getPosts(
+export async function getSongs(
   params: PaginatedSearchParams
-): Promise<ActionResponse<{ posts: Post[]; isNext: boolean }>> {
+): Promise<ActionResponse<{ songs: Song[]; isNext: boolean }>> {
   const validationResult = await action({
     params,
     schema: PaginatedSearchParamsSchema,
@@ -229,10 +229,10 @@ export async function getPosts(
   const skip = (Number(page) - 1) * pageSize;
   const limit = Number(pageSize);
 
-  const filterQuery: FilterQuery<typeof Post> = {};
+  const filterQuery: FilterQuery<typeof Song> = {};
 
   if (filter === "recommended")
-    return { success: true, data: { posts: [], isNext: false } };
+    return { success: true, data: { songs: [], isNext: false } };
 
   if (query) {
     filterQuery.$or = [
@@ -260,8 +260,8 @@ export async function getPosts(
   }
 
   try {
-    const totalPosts = await Post.countDocuments(filterQuery);
-    const posts = await Post.find(filterQuery)
+    const totalSongs = await Song.countDocuments(filterQuery);
+    const songs = await Song.find(filterQuery)
       .populate("tags", "name")
       .populate("author", "name image")
       .lean()
@@ -269,11 +269,11 @@ export async function getPosts(
       .skip(skip)
       .limit(limit);
 
-    const isNext = totalPosts > skip + posts.length;
+    const isNext = totalSongs > skip + songs.length;
 
     return {
       success: true,
-      data: { posts: JSON.parse(JSON.stringify(posts)), isNext },
+      data: { songs: JSON.parse(JSON.stringify(songs)), isNext },
     };
   } catch (error) {
     return handleError(error) as ErrorResponse;

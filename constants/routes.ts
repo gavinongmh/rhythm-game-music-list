@@ -10,7 +10,7 @@ const ROUTES = {
   TAGS: "/tags",
   TAG: (id: string) => `/tags/${id}`,
   PROFILE: (id: string) => `/profile/${id}`,
-  POST: (id: string) => `/posts/${id}`,
+  POST: (id: string) => `/songs/${id}`,
   SIGN_IN_WITH_OAUTH: "signin-with-oauth",
 };
 

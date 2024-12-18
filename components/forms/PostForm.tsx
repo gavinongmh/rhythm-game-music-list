@@ -11,8 +11,8 @@ import { z } from "zod";
 
 import ROUTES from "@/constants/routes";
 import { toast } from "@/hooks/use-toast";
-import { editPost, makePost } from "@/lib/actions/post.action";
-import { MakePostSchema } from "@/lib/validations";
+import { editSong, makeSong } from "@/lib/actions/post.action";
+import { MakeSongSchema } from "@/lib/validations";
 
 import TagCard from "../cards/TagCard";
 import { Button } from "../ui/button";
@@ -33,17 +33,17 @@ const Editor = dynamic(() => import("@/components/editor"), {
 });
 
 interface Params {
-  post?: Post;
+  post?: Song;
   isEdit?: boolean;
 }
 
-const PostForm = ({ post, isEdit = false }: Params) => {
+const SongForm = ({ post, isEdit = false }: Params) => {
   const router = useRouter();
   const editorRef = useRef<MDXEditorMethods>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof MakePostSchema>>({
-    resolver: zodResolver(MakePostSchema),
+  const form = useForm<z.infer<typeof MakeSongSchema>>({
+    resolver: zodResolver(MakeSongSchema),
     defaultValues: {
       title: post?.title || "",
       content: post?.content || "",
@@ -89,14 +89,14 @@ const PostForm = ({ post, isEdit = false }: Params) => {
     }
   };
 
-  const handleMakePost = async (data: z.infer<typeof MakePostSchema>) => {
+  const handleMakeSong = async (data: z.infer<typeof MakeSongSchema>) => {
     startTransition(async () => {
       if (isEdit && post) {
-        const result = await editPost({ postId: post?._id, ...data });
+        const result = await editSong({ postId: post?._id, ...data });
         if (result.success) {
           toast({
             title: "Success",
-            description: "Post updated successfully",
+            description: "Song updated successfully",
           });
           if (result.data) {
             router.push(ROUTES.POST(result.data._id as string));
@@ -111,12 +111,12 @@ const PostForm = ({ post, isEdit = false }: Params) => {
 
         return;
       }
-      const result = await makePost(data);
+      const result = await makeSong(data);
 
       if (result.success) {
         toast({
           title: "Success",
-          description: "Post created successfully",
+          description: "Song created successfully",
         });
         if (result.data) {
           router.push(ROUTES.POST(result.data._id as string));
@@ -134,7 +134,7 @@ const PostForm = ({ post, isEdit = false }: Params) => {
     <Form {...form}>
       <form
         className="flex w-full flex-col gap-10"
-        onSubmit={form.handleSubmit(handleMakePost)}
+        onSubmit={form.handleSubmit(handleMakeSong)}
       >
         <FormField
           control={form.control}
@@ -142,7 +142,7 @@ const PostForm = ({ post, isEdit = false }: Params) => {
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                Post Title <span className="text-primary-500">*</span>
+                Song Title <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input
@@ -163,7 +163,7 @@ const PostForm = ({ post, isEdit = false }: Params) => {
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                Post Content <span className="text-primary-500">*</span>
+                Song Content <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl>
                 <Editor
@@ -232,7 +232,7 @@ const PostForm = ({ post, isEdit = false }: Params) => {
                 <span>Submitting</span>
               </>
             ) : (
-              <>{isEdit ? "Edit" : "Make Post"}</>
+              <>{isEdit ? "Edit" : "Make Song"}</>
             )}
           </Button>
         </div>
@@ -241,4 +241,4 @@ const PostForm = ({ post, isEdit = false }: Params) => {
   );
 };
 
-export default PostForm;
+export default SongForm;

@@ -20,10 +20,10 @@ export const DEFAULT_ERROR = {
 };
 
 export const EMPTY_POST = {
-  title: "Ahh, No Posts Yet!",
-  message: "No posts found. Maybe you should make one!",
+  title: "Ahh, No Songs Yet!",
+  message: "No songs found. Maybe you should make one!",
   button: {
-    text: "Ask a Post",
+    text: "Ask a Song",
     href: ROUTES.MAKE_POST,
   },
 };

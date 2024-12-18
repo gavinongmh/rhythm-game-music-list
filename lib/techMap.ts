@@ -65,7 +65,7 @@ export const techMap: { [key: string]: string } = {
   // MySQL
   mysql: "devicon-mysql-plain",
 
-  // PostgreSQL
+  // SonggreSQL
   postgresql: "devicon-postgresql-plain",
   postgres: "devicon-postgresql-plain",
 

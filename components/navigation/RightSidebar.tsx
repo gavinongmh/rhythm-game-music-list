@@ -6,7 +6,7 @@ import ROUTES from "@/constants/routes";
 
 import TagCard from "../cards/TagCard";
 
-const hotPosts = [
+const hotSongs = [
   { _id: "1", title: "How to get a map pack approved?" },
   { _id: "2", title: "Mapping tips and tricks?" },
   { _id: "3", title: "How to clear harder maps?" },
@@ -15,21 +15,21 @@ const hotPosts = [
 ];
 
 const popularTags = [
-  { _id: "1", name: "Suggestion", posts: 100 },
-  { _id: "2", name: "Mapping", posts: 200 },
-  { _id: "3", name: "Gameplay", posts: 150 },
-  { _id: "4", name: "Bug", posts: 50 },
-  { _id: "5", name: "Feedback", posts: 75 },
+  { _id: "1", name: "Suggestion", songs: 100 },
+  { _id: "2", name: "Mapping", songs: 200 },
+  { _id: "3", name: "Gameplay", songs: 150 },
+  { _id: "4", name: "Bug", songs: 50 },
+  { _id: "5", name: "Feedback", songs: 75 },
 ];
 
 const RightSidebar = () => {
   return (
     <section className="background-light900_dark200 light-border custom-scrollbar sticky right-0 top-0 flex h-screen w-[350px] flex-col gap-6 overflow-y-auto border-l p-6 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden">
       <div>
-        <h3 className="h3-bold text-dark200_light900">Top Posts</h3>
+        <h3 className="h3-bold text-dark200_light900">Top Songs</h3>
 
         <div className="mt-7 flex w-full flex-col gap-[30px]">
-          {hotPosts.map(({ _id, title }) => (
+          {hotSongs.map(({ _id, title }) => (
             <Link
               key={_id}
               href={ROUTES.PROFILE(_id)}
@@ -52,12 +52,12 @@ const RightSidebar = () => {
       <div className="mt-16">
         <h3 className="h3-bold text-dark200_light900">Popular Tags</h3>
         <div className="mt-7 flex flex-col gap-4">
-          {popularTags.map(({ _id, name, posts: posts }) => (
+          {popularTags.map(({ _id, name, songs: songs }) => (
             <TagCard
               key={_id}
               _id={_id}
               name={name}
-              posts={posts}
+              songs={songs}
               showCount
               compact
             />

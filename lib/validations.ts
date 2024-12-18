@@ -52,7 +52,7 @@ export const SignUpSchema = z.object({
     }),
 });
 
-export const MakePostSchema = z.object({
+export const MakeSongSchema = z.object({
   title: z
     .string()
     .min(5, { message: "Title is required." })
@@ -129,12 +129,12 @@ export const SignInWithOAuthSchema = z.object({
   }),
 });
 
-export const EditPostSchema = MakePostSchema.extend({
-  postId: z.string().min(1, { message: "Post ID is required. " }),
+export const EditSongSchema = MakeSongSchema.extend({
+  postId: z.string().min(1, { message: "Song ID is required. " }),
 });
 
-export const GetPostSchema = z.object({
-  postId: z.string().min(1, { message: "Post ID is required." }),
+export const GetSongSchema = z.object({
+  postId: z.string().min(1, { message: "Song ID is required." }),
 });
 
 export const PaginatedSearchParamsSchema = z.object({

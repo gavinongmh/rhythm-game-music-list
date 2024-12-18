@@ -46,11 +46,11 @@ BaseFlow leverages the following technologies:
 
 👉 **Authentication**: Secure sign-in with NextAuth, supporting Email/Password, Google, and GitHub.
 
-👉 **Home Page**: Displays posts with filters, search, and pagination for easy navigation.
+👉 **Home Page**: Displays songs with filters, search, and pagination for easy navigation.
 
 👉 **Organized Layout**: Organized layout with popular questions and tags in view.
 
-👉 **Make a post**: Simple interface for making new posts.
+👉 **Make a post**: Simple interface for making new songs.
 
 👉 **Global Search**: Find content across questions, users, tags, and more.
 
