@@ -50,7 +50,7 @@ BaseFlow leverages the following technologies:
 
 👉 **Organized Layout**: Organized layout with popular questions and tags in view.
 
-👉 **Make a post**: Simple interface for making new songs.
+👉 **Make a song**: Simple interface for making new songs.
 
 👉 **Global Search**: Find content across questions, users, tags, and more.
 

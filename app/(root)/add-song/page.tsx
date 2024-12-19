@@ -4,12 +4,12 @@ import React from "react";
 import { auth } from "@/auth";
 import SongForm from "@/components/forms/SongForm";
 
-const MakeSong = async () => {
+const AddSong = async () => {
   const session = await auth();
   if (!session) return redirect("/sign-in");
   return (
     <>
-      <h1 className="h1-bold text-dark100_light900"> Make a post</h1>
+      <h1 className="h1-bold text-dark100_light900"> Add a song</h1>
       <div className="mt-9">
         <SongForm />
       </div>
@@ -17,4 +17,4 @@ const MakeSong = async () => {
   );
 };
 
-export default MakeSong;
+export default AddSong;

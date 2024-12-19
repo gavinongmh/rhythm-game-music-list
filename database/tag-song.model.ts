@@ -2,7 +2,7 @@ import { Schema, models, model, Types, Document } from "mongoose";
 
 export interface ITagSong {
   tag: Types.ObjectId;
-  post: Types.ObjectId;
+  song: Types.ObjectId;
 }
 
 export interface ITagQuestionDoc extends ITagSong, Document {}
@@ -10,7 +10,7 @@ export interface ITagQuestionDoc extends ITagSong, Document {}
 const TagSongSchema = new Schema<ITagSong>(
   {
     tag: { type: Schema.Types.ObjectId, ref: "Tag", required: true },
-    post: { type: Schema.Types.ObjectId, ref: "Song", required: true },
+    song: { type: Schema.Types.ObjectId, ref: "Song", required: true },
   },
   { timestamps: true }
 );

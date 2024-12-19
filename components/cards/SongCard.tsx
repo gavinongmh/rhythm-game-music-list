@@ -8,11 +8,11 @@ import TagCard from "./TagCard";
 import Metric from "../Metric";
 
 interface Props {
-  post: Song;
+  song: Song;
 }
 
 const SongCard = ({
-  post: { _id, title, tags, author, createdAt, upvotes, comments, views },
+  song: { _id, title, tags, author, createdAt, upvotes, comments, views },
 }: Props) => {
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11">
@@ -21,7 +21,7 @@ const SongCard = ({
           <span className="subtle-regular text-dark400_light700 line-clamp-1 flex sm:hidden">
             {getTimeStamp(createdAt)}
           </span>
-          <Link href={ROUTES.POST(_id)}>
+          <Link href={ROUTES.SONG(_id)}>
             <h3 className="sm:h3-semibold base-semibold text-dark200_light900 line-clamp-1 flex-1">
               {title}
             </h3>

@@ -52,7 +52,7 @@ export const SignUpSchema = z.object({
     }),
 });
 
-export const MakeSongSchema = z.object({
+export const AddSongSchema = z.object({
   title: z
     .string()
     .min(5, { message: "Title is required." })
@@ -69,6 +69,16 @@ export const MakeSongSchema = z.object({
     )
     .min(1, { message: "At least one tag is required." })
     .max(3, { message: "Cannot add more than 3 tags." }),
+  artists: z
+    .array(
+      z
+        .string()
+        .min(1, { message: "Artist is required." })
+        .max(30, { message: "Artist cannot exceed 30 characters." })
+    )
+    .min(1, { message: "At least one tag is required." })
+    .max(20, { message: "Cannot add more than 20 artists." }),
+  usage: z.array(z.string()),
 });
 
 export const UserSchema = z.object({
@@ -129,12 +139,12 @@ export const SignInWithOAuthSchema = z.object({
   }),
 });
 
-export const EditSongSchema = MakeSongSchema.extend({
-  postId: z.string().min(1, { message: "Song ID is required. " }),
+export const EditSongSchema = AddSongSchema.extend({
+  songId: z.string().min(1, { message: "Song ID is required. " }),
 });
 
 export const GetSongSchema = z.object({
-  postId: z.string().min(1, { message: "Song ID is required." }),
+  songId: z.string().min(1, { message: "Song ID is required." }),
 });
 
 export const PaginatedSearchParamsSchema = z.object({

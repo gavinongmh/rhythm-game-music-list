@@ -3,6 +3,12 @@ interface Tag {
   name: string;
 }
 
+interface Artist {
+  _id: string;
+  name: string;
+  image: string;
+}
+
 interface Author {
   _id: string;
   name: string;
@@ -14,6 +20,7 @@ interface Song {
   title: string;
   content: string;
   tags: Tag[];
+  artists: Artist[];
   author: Author;
   createdAt: Date;
   upvotes: number;

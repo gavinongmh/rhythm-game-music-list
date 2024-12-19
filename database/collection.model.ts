@@ -2,7 +2,7 @@ import { Schema, models, model, Types, Document } from "mongoose";
 
 export interface ICollection {
   author: Types.ObjectId;
-  post: Types.ObjectId;
+  song: Types.ObjectId;
 }
 
 export interface ICollectionDoc extends ICollection, Document {}
@@ -10,7 +10,7 @@ export interface ICollectionDoc extends ICollection, Document {}
 const CollectionSchema = new Schema<ICollection>(
   {
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    post: { type: Schema.Types.ObjectId, ref: "Song", required: true },
+    song: { type: Schema.Types.ObjectId, ref: "Song", required: true },
   },
   { timestamps: true }
 );

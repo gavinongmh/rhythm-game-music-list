@@ -5,7 +5,7 @@ import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
-import { getSongs } from "@/lib/actions/post.action";
+import { getSongs } from "@/lib/actions/song.action";
 import DataRenderer from "@/components/DataRenderer";
 import { EMPTY_POST } from "@/constants/states";
 
@@ -44,7 +44,7 @@ const Home = async ({ searchParams }: SearchParams) => {
           className="primary-gradient min-h-[46px] px-4 py-3 !text-light-900"
           asChild
         >
-          <Link href={ROUTES.MAKE_POST}>Make a Song</Link>
+          <Link href={ROUTES.ADD_SONG}>Add a Song</Link>
         </Button>
       </section>
       <section className="mt-11">
@@ -64,8 +64,8 @@ const Home = async ({ searchParams }: SearchParams) => {
         empty={EMPTY_POST}
         render={(songs) => (
           <div className="mt-10 flex w-full flex-col gap-6">
-            {songs.map((post) => (
-              <SongCard key={post._id} post={post} />
+            {songs.map((song) => (
+              <SongCard key={song._id} song={song} />
             ))}
           </div>
         )}

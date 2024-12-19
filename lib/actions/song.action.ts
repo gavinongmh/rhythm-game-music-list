@@ -2,8 +2,8 @@
 
 import mongoose, { FilterQuery } from "mongoose";
 
-import Song, { ISongDoc } from "@/database/post.model";
-import TagSong from "@/database/tag-post.model";
+import Song, { ISongDoc } from "@/database/song.model";
+import TagSong from "@/database/tag-song.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
 
 import action from "../handlers/action";
@@ -11,16 +11,16 @@ import handleError from "../handlers/error";
 import {
   EditSongSchema,
   GetSongSchema,
-  MakeSongSchema,
+  AddSongSchema,
   PaginatedSearchParamsSchema,
 } from "../validations";
 
-export async function makeSong(
-  params: MakeSongParams
+export async function addSong(
+  params: AddSongParams
 ): Promise<ActionResponse<ISongDoc>> {
   const validationResult = await action({
     params,
-    schema: MakeSongSchema,
+    schema: AddSongSchema,
     authorize: true,
   });
 
@@ -35,11 +35,11 @@ export async function makeSong(
   session.startTransaction();
 
   try {
-    const [post] = await Song.create([{ title, content, author: userId }], {
+    const [song] = await Song.create([{ title, content, author: userId }], {
       session,
     });
-    if (!post) {
-      throw new Error("Failed to create post");
+    if (!song) {
+      throw new Error("Failed to create song");
     }
 
     const tagIds: mongoose.Types.ObjectId[] = [];
@@ -57,20 +57,20 @@ export async function makeSong(
       tagIds.push(existingTag._id);
       tagSongDocuments.push({
         tag: existingTag._id,
-        post: post._id,
+        song: song._id,
       });
     }
     await TagSong.insertMany(tagSongDocuments, { session });
 
     await Song.findByIdAndUpdate(
-      post._id,
+      song._id,
       { $push: { tags: { $each: tagIds } } },
       { session }
     );
 
     await session.commitTransaction();
 
-    return { success: true, data: JSON.parse(JSON.stringify(post)) };
+    return { success: true, data: JSON.parse(JSON.stringify(song)) };
   } catch (error) {
     await session.abortTransaction();
     return handleError(error) as ErrorResponse;
@@ -92,36 +92,36 @@ export async function editSong(
     return handleError(validationResult) as ErrorResponse;
   }
 
-  const { title, content, tags, postId } = validationResult.params!;
+  const { title, content, tags, songId } = validationResult.params!;
   const userId = validationResult?.session?.user?.id;
 
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    const post = await Song.findById(postId).populate("tags");
+    const song = await Song.findById(songId).populate("tags");
 
-    if (!post) {
+    if (!song) {
       throw new Error("Song not found");
     }
 
-    if (post.author.toString() !== userId) {
+    if (song.author.toString() !== userId) {
       throw new Error("Unauthorized");
     }
 
-    if (post.title !== title || post.content !== content) {
-      post.title = title;
-      post.content = content;
-      await post.save({ session });
+    if (song.title !== title || song.content !== content) {
+      song.title = title;
+      song.content = content;
+      await song.save({ session });
     }
 
     const tagsToAdd = tags.filter(
       (tag) =>
-        !post.tags.some((t: ITagDoc) =>
+        !song.tags.some((t: ITagDoc) =>
           t.name.toLowerCase().includes(tag.toLowerCase())
         )
     );
-    const tagsToRemove = post.tags.filter(
+    const tagsToRemove = song.tags.filter(
       (tag: ITagDoc) =>
         !tags.some((t) => t.toLowerCase() === tag.name.toLowerCase())
     );
@@ -139,10 +139,10 @@ export async function editSong(
         if (existingTag) {
           newTagDocuments.push({
             tag: existingTag._id,
-            post: postId,
+            song: songId,
           });
 
-          post.tags.push(existingTag._id);
+          song.tags.push(existingTag._id);
         }
       }
     }
@@ -157,11 +157,11 @@ export async function editSong(
       );
 
       await TagSong.deleteMany(
-        { tag: { $in: tagIdsToRemove }, post: postId },
+        { tag: { $in: tagIdsToRemove }, song: songId },
         { session }
       );
 
-      post.tags = post.tags.filter(
+      song.tags = song.tags.filter(
         (tag: mongoose.Types.ObjectId) =>
           !tagIdsToRemove.some((id: mongoose.Types.ObjectId) =>
             id.equals(tag._id)
@@ -173,10 +173,10 @@ export async function editSong(
       await TagSong.insertMany(newTagDocuments, { session });
     }
 
-    await post.save({ session });
+    await song.save({ session });
     await session.commitTransaction();
 
-    return { success: true, data: JSON.parse(JSON.stringify(post)) };
+    return { success: true, data: JSON.parse(JSON.stringify(song)) };
   } catch (error) {
     await session.abortTransaction();
     return handleError(error) as ErrorResponse;
@@ -198,16 +198,16 @@ export async function getSong(
     return handleError(validationResult) as ErrorResponse;
   }
 
-  const { postId } = validationResult.params!;
+  const { songId } = validationResult.params!;
 
   try {
-    const post = await Song.findById(postId).populate("tags");
+    const song = await Song.findById(songId).populate("tags");
 
-    if (!post) {
+    if (!song) {
       throw new Error("Song not found");
     }
 
-    return { success: true, data: JSON.parse(JSON.stringify(post)) };
+    return { success: true, data: JSON.parse(JSON.stringify(song)) };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }

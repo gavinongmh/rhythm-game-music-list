@@ -11,8 +11,8 @@ import { z } from "zod";
 
 import ROUTES from "@/constants/routes";
 import { toast } from "@/hooks/use-toast";
-import { editSong, makeSong } from "@/lib/actions/post.action";
-import { MakeSongSchema } from "@/lib/validations";
+import { editSong, addSong } from "@/lib/actions/song.action";
+import { AddSongSchema } from "@/lib/validations";
 
 import TagCard from "../cards/TagCard";
 import { Button } from "../ui/button";
@@ -33,42 +33,45 @@ const Editor = dynamic(() => import("@/components/editor"), {
 });
 
 interface Params {
-  post?: Song;
+  song?: Song;
   isEdit?: boolean;
 }
 
-const SongForm = ({ post, isEdit = false }: Params) => {
+const SongForm = ({ song, isEdit = false }: Params) => {
   const router = useRouter();
   const editorRef = useRef<MDXEditorMethods>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof MakeSongSchema>>({
-    resolver: zodResolver(MakeSongSchema),
+  const form = useForm<z.infer<typeof AddSongSchema>>({
+    resolver: zodResolver(AddSongSchema),
     defaultValues: {
-      title: post?.title || "",
-      content: post?.content || "",
-      tags: post?.tags.map((tag) => tag.name) || [],
+      title: song?.title || "",
+      content: song?.content || "",
+      // TBD: Add usage
+      tags: song?.tags.map((tag) => tag.name) || [],
+      artists: song?.artists.map((artist) => artist.name) || [],
     },
   });
 
   const handleInputKeyDown = (
+    param: keyof z.infer<typeof AddSongSchema>,
     e: React.KeyboardEvent<HTMLInputElement>,
     field: { value: string[] }
   ) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      const tagInput = e.currentTarget.value.trim();
-      if (tagInput && tagInput.length < 15 && !field.value.includes(tagInput)) {
-        form.setValue("tags", [...field.value, tagInput]);
+      const input = e.currentTarget.value.trim();
+      if (input && input.length < 15 && !field.value.includes(input)) {
+        form.setValue(param, [...field.value, input]);
         e.currentTarget.value = "";
-        form.clearErrors("tags");
-      } else if (tagInput.length > 15) {
-        form.setError("tags", {
+        form.clearErrors(param);
+      } else if (input.length > 15) {
+        form.setError(param, {
           type: "manual",
           message: "Tag should be less than 15 characters",
         });
-      } else if (field.value.includes(tagInput)) {
-        form.setError("tags", {
+      } else if (field.value.includes(input)) {
+        form.setError(param, {
           type: "manual",
           message: "Tag already exists",
         });
@@ -89,17 +92,30 @@ const SongForm = ({ post, isEdit = false }: Params) => {
     }
   };
 
-  const handleMakeSong = async (data: z.infer<typeof MakeSongSchema>) => {
+  const handleArtistRemove = (artist: string, field: { value: string[] }) => {
+    const newArtists = field.value.filter((t) => t !== artist);
+
+    form.setValue("artists", newArtists);
+
+    if (newArtists.length === 0) {
+      form.setError("artists", {
+        type: "manual",
+        message: "Artists are required",
+      });
+    }
+  };
+
+  const handleAddSong = async (data: z.infer<typeof AddSongSchema>) => {
     startTransition(async () => {
-      if (isEdit && post) {
-        const result = await editSong({ postId: post?._id, ...data });
+      if (isEdit && song) {
+        const result = await editSong({ songId: song?._id, ...data });
         if (result.success) {
           toast({
             title: "Success",
             description: "Song updated successfully",
           });
           if (result.data) {
-            router.push(ROUTES.POST(result.data._id as string));
+            router.push(ROUTES.SONG(result.data._id as string));
           } else {
             toast({
               title: `Error ${result.status}`,
@@ -111,7 +127,7 @@ const SongForm = ({ post, isEdit = false }: Params) => {
 
         return;
       }
-      const result = await makeSong(data);
+      const result = await addSong(data);
 
       if (result.success) {
         toast({
@@ -119,7 +135,7 @@ const SongForm = ({ post, isEdit = false }: Params) => {
           description: "Song created successfully",
         });
         if (result.data) {
-          router.push(ROUTES.POST(result.data._id as string));
+          router.push(ROUTES.SONG(result.data._id as string));
         } else {
           toast({
             title: `Error ${result.status}`,
@@ -134,7 +150,7 @@ const SongForm = ({ post, isEdit = false }: Params) => {
     <Form {...form}>
       <form
         className="flex w-full flex-col gap-10"
-        onSubmit={form.handleSubmit(handleMakeSong)}
+        onSubmit={form.handleSubmit(handleAddSong)}
       >
         <FormField
           control={form.control}
@@ -151,7 +167,7 @@ const SongForm = ({ post, isEdit = false }: Params) => {
                 />
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
-                Please be specific and keep the title relevant to the post!
+                Please be specific and keep the title relevant to the song!
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -159,21 +175,38 @@ const SongForm = ({ post, isEdit = false }: Params) => {
         />
         <FormField
           control={form.control}
-          name="content"
+          name="artists"
           render={({ field }) => (
-            <FormItem className="flex w-full flex-col">
+            <FormItem className="flex w-full flex-col gap-3">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                Song Content <span className="text-primary-500">*</span>
+                Artists <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl>
-                <Editor
-                  value={field.value}
-                  editorRef={editorRef}
-                  fieldChange={field.onChange}
-                />
+                <div>
+                  <Input
+                    className="paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 no-focus min-h-[56px] border"
+                    placeholder="Add artists..."
+                    onKeyDown={(e) => handleInputKeyDown("artists", e, field)}
+                  />
+                  {field.value.length > 0 && (
+                    <div className="flex-start mt-2.5 flex-wrap gap-2.5">
+                      {field?.value?.map((artist: string) => (
+                        <TagCard
+                          key={artist}
+                          _id={artist}
+                          name={artist}
+                          compact
+                          remove
+                          isButton
+                          handleRemove={() => handleArtistRemove(artist, field)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
-                What is your post about?
+                Add the song's artists. Press enter to add an artist.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -192,7 +225,7 @@ const SongForm = ({ post, isEdit = false }: Params) => {
                   <Input
                     className="paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 no-focus min-h-[56px] border"
                     placeholder="Add tags..."
-                    onKeyDown={(e) => handleInputKeyDown(e, field)}
+                    onKeyDown={(e) => handleInputKeyDown("tags", e, field)}
                   />
                   {field.value.length > 0 && (
                     <div className="flex-start mt-2.5 flex-wrap gap-2.5">
@@ -219,7 +252,28 @@ const SongForm = ({ post, isEdit = false }: Params) => {
             </FormItem>
           )}
         />
-
+        <FormField
+          control={form.control}
+          name="content"
+          render={({ field }) => (
+            <FormItem className="flex w-full flex-col">
+              <FormLabel className="paragraph-semibold text-dark400_light800">
+                Song Content <span className="text-primary-500">*</span>
+              </FormLabel>
+              <FormControl>
+                <Editor
+                  value={field.value}
+                  editorRef={editorRef}
+                  fieldChange={field.onChange}
+                />
+              </FormControl>
+              <FormDescription className="body-regular mt-2.5 text-light-500">
+                What is your song about?
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="mt-16 flex justify-end">
           <Button
             type="submit"
@@ -232,7 +286,7 @@ const SongForm = ({ post, isEdit = false }: Params) => {
                 <span>Submitting</span>
               </>
             ) : (
-              <>{isEdit ? "Edit" : "Make Song"}</>
+              <>{isEdit ? "Edit" : "Add Song"}</>
             )}
           </Button>
         </div>

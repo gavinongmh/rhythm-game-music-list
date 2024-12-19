@@ -21,7 +21,7 @@ const spaceGrotesk = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "MuseFlow",
+  title: "Rhythm Game Music List",
   description:
     "A community-driven platform for rhythm game related stuff. Get help, share knowledge, and collaborate with rhythm gamers around the world. Explore topics in rhythm gaming, mapping, and more.",
   icons: {

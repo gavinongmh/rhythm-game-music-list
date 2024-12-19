@@ -4,7 +4,7 @@ import React from "react";
 import { auth } from "@/auth";
 import SongForm from "@/components/forms/SongForm";
 import ROUTES from "@/constants/routes";
-import { getSong } from "@/lib/actions/post.action";
+import { getSong } from "@/lib/actions/song.action";
 
 const EditSong = async ({ params }: RouteParams) => {
   const { id } = await params;
@@ -13,14 +13,14 @@ const EditSong = async ({ params }: RouteParams) => {
   const session = await auth();
   if (!session) return redirect("/sign-in");
 
-  const { data: post, success } = await getSong({ postId: id });
+  const { data: song, success } = await getSong({ songId: id });
   if (!success) return notFound();
 
-  if (post?.author.toString() !== session?.user?.id) redirect(ROUTES.POST(id));
+  if (song?.author.toString() !== session?.user?.id) redirect(ROUTES.SONG(id));
 
   return (
     <>
-      <SongForm post={post} isEdit />
+      <SongForm song={song} isEdit />
     </>
   );
 };
