@@ -168,7 +168,7 @@ export async function editSong(
 
         if (existingUsage) {
           newUsageDocuments.push({
-            tag: existingUsage._id,
+            usage: existingUsage._id,
             song: songId,
           });
 

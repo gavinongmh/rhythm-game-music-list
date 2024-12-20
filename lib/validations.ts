@@ -76,15 +76,18 @@ export const AddSongSchema = z.object({
         .min(1, { message: "Artist is required." })
         .max(30, { message: "Artist cannot exceed 30 characters." })
     )
-    .min(1, { message: "At least one tag is required." })
+    .min(1, { message: "At least one artist is required." })
     .max(20, { message: "Cannot add more than 20 artists." }),
   usage: z.array(
-    z.enum([
-      "commercial",
-      "non-commercial",
-      "commercial-official",
-      "non-commercial-official",
-    ])
+    z.enum(
+      [
+        "commercial",
+        "non-commercial",
+        "commercial-official",
+        "non-commercial-official",
+      ],
+      { message: "Invalid usage type added." }
+    )
   ),
 });
 
