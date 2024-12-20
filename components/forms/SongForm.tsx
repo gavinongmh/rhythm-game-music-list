@@ -16,6 +16,7 @@ import { AddSongSchema } from "@/lib/validations";
 
 import TagCard from "../cards/TagCard";
 import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   Form,
   FormControl,
@@ -37,6 +38,13 @@ interface Params {
   isEdit?: boolean;
 }
 
+const usageOptions = [
+  "non-commercial",
+  "non-commercial-official",
+  "commercial",
+  "commercial-official",
+];
+
 const SongForm = ({ song, isEdit = false }: Params) => {
   const router = useRouter();
   const editorRef = useRef<MDXEditorMethods>(null);
@@ -46,10 +54,10 @@ const SongForm = ({ song, isEdit = false }: Params) => {
     resolver: zodResolver(AddSongSchema),
     defaultValues: {
       title: song?.title || "",
-      content: song?.content || "",
-      // TBD: Add usage
+      notes: song?.notes || "",
+      usage: song?.usage.map((use) => use.name) || [],
       tags: song?.tags.map((tag) => tag.name) || [],
-      artists: song?.artists.map((artist) => artist.name) || [],
+      artists: song?.artists?.map((artist) => artist.name) || [],
     },
   });
 
@@ -206,11 +214,60 @@ const SongForm = ({ song, isEdit = false }: Params) => {
                 </div>
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
-                Add the song's artists. Press enter to add an artist.
+                Add the song&apos;s artists. Press enter to add an artist.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
+        />
+        <FormField
+          control={form.control}
+          name="usage"
+          render={() => {
+            return (
+              <FormItem className="flex w-full flex-col gap-3">
+                <FormLabel className="paragraph-semibold text-dark400_light800">
+                  Usage <span className="text-primary-500">*</span>
+                </FormLabel>
+                {usageOptions.map((use) => (
+                  <FormField
+                    key={use}
+                    control={form.control}
+                    name="usage"
+                    render={({ field }) => {
+                      return (
+                        <FormItem
+                          key={use}
+                          className="flex flex-row items-start space-x-3 space-y-0"
+                        >
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value?.includes(use)}
+                              onCheckedChange={(checked) => {
+                                return checked
+                                  ? field.onChange([...field.value, use])
+                                  : field.onChange(
+                                      field.value?.filter(
+                                        (value) => value !== use
+                                      )
+                                    );
+                              }}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal">{use}</FormLabel>
+                        </FormItem>
+                      );
+                    }}
+                  />
+                ))}
+                <FormDescription className="body-regular mt-2.5 text-light-500">
+                  Official use allows songs to be included within the
+                  game&apos;s files.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
         <FormField
           control={form.control}
@@ -254,11 +311,11 @@ const SongForm = ({ song, isEdit = false }: Params) => {
         />
         <FormField
           control={form.control}
-          name="content"
+          name="notes"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                Song Content <span className="text-primary-500">*</span>
+                Song notes <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl>
                 <Editor

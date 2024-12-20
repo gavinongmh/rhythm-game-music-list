@@ -57,7 +57,7 @@ export const AddSongSchema = z.object({
     .string()
     .min(5, { message: "Title is required." })
     .max(100, { message: "Title cannot exceed 100 characters." }),
-  content: z.string().min(1, { message: "Body is required." }).max(50000, {
+  notes: z.string().min(1, { message: "Body is required." }).max(50000, {
     message: "Body cannot exceed 50000 characters.",
   }),
   tags: z
@@ -78,7 +78,14 @@ export const AddSongSchema = z.object({
     )
     .min(1, { message: "At least one tag is required." })
     .max(20, { message: "Cannot add more than 20 artists." }),
-  usage: z.array(z.string()),
+  usage: z.array(
+    z.enum([
+      "commercial",
+      "non-commercial",
+      "commercial-official",
+      "non-commercial-official",
+    ])
+  ),
 });
 
 export const UserSchema = z.object({

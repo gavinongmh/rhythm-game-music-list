@@ -20,7 +20,7 @@ const Navbar = async () => {
           alt="MuseFlow Logo"
         />
         <p className="h2-bold font-space-grotesk text-dark-100 dark:text-light-900 max-sm:hidden">
-          Muse<span className="text-primary-500">Flow</span>
+          Rhythm Game <span className="text-primary-500">Music List</span>
         </p>
       </Link>
       <p>Global Search</p>

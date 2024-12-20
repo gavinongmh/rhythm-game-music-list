@@ -5,6 +5,8 @@ import mongoose, { FilterQuery } from "mongoose";
 import Song, { ISongDoc } from "@/database/song.model";
 import TagSong from "@/database/tag-song.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
+import UsageSong from "@/database/usage-song.model";
+import Usage, { IUsageDoc } from "@/database/usage.model";
 
 import action from "../handlers/action";
 import handleError from "../handlers/error";
@@ -28,19 +30,43 @@ export async function addSong(
     return handleError(validationResult) as ErrorResponse;
   }
 
-  const { title, content, tags } = validationResult.params!;
+  const { title, notes, tags, usage } = validationResult.params!;
   const userId = validationResult?.session?.user?.id;
 
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    const [song] = await Song.create([{ title, content, author: userId }], {
+    const [song] = await Song.create([{ title, notes, author: userId }], {
       session,
     });
     if (!song) {
       throw new Error("Failed to create song");
     }
+
+    const usageIds: mongoose.Types.ObjectId[] = [];
+    const usageSongDocuments = [];
+
+    for (const use of usage) {
+      const existingUsage = await Usage.findOneAndUpdate(
+        { name: { $regex: new RegExp(`^${use}$`, "i") } },
+        { $setOnInsert: { name: use }, $inc: { songs: 1 } },
+        { upsert: true, new: true, session }
+      );
+
+      usageIds.push(existingUsage._id);
+      usageSongDocuments.push({
+        usage: existingUsage._id,
+        song: song._id,
+      });
+    }
+    await UsageSong.insertMany(usageSongDocuments, { session });
+
+    await Song.findByIdAndUpdate(
+      song._id,
+      { $push: { usage: { $each: usageIds } } },
+      { session }
+    );
 
     const tagIds: mongoose.Types.ObjectId[] = [];
     const tagSongDocuments = [];
@@ -92,14 +118,14 @@ export async function editSong(
     return handleError(validationResult) as ErrorResponse;
   }
 
-  const { title, content, tags, songId } = validationResult.params!;
+  const { title, notes, tags, songId, usage } = validationResult.params!;
   const userId = validationResult?.session?.user?.id;
 
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    const song = await Song.findById(songId).populate("tags");
+    const song = await Song.findById(songId).populate("tags").populate("usage");
 
     if (!song) {
       throw new Error("Song not found");
@@ -109,11 +135,79 @@ export async function editSong(
       throw new Error("Unauthorized");
     }
 
-    if (song.title !== title || song.content !== content) {
+    if (song.title !== title || song.notes !== notes) {
       song.title = title;
-      song.content = content;
+      song.notes = notes;
       await song.save({ session });
     }
+
+    // ==============================
+    // Usage editing
+    // ==============================
+
+    const usageToAdd = usage.filter(
+      (use) =>
+        !song.usage.some((u: IUsageDoc) =>
+          u.name.toLowerCase().includes(use.toLowerCase())
+        )
+    );
+    const usageToRemove = song.usage.filter(
+      (use: IUsageDoc) =>
+        !usage.some((u) => u.toLowerCase() === use.name.toLowerCase())
+    );
+
+    const newUsageDocuments = [];
+
+    if (usageToAdd.length > 0) {
+      for (const usage of usageToAdd) {
+        const existingUsage = await Usage.findOneAndUpdate(
+          { name: { $regex: `^${usage}$`, $options: "i" } },
+          { $setOnInsert: { name: usage }, $inc: { songs: 1 } },
+          { upsert: true, new: true, session }
+        );
+
+        if (existingUsage) {
+          newUsageDocuments.push({
+            tag: existingUsage._id,
+            song: songId,
+          });
+
+          song.usage.push(existingUsage._id);
+        }
+      }
+    }
+
+    if (usageToRemove.length > 0) {
+      const usageIdsToRemove = usageToRemove.map(
+        (usage: IUsageDoc) => usage._id
+      );
+
+      await Usage.updateMany(
+        { _id: { $in: usageIdsToRemove } },
+        { $inc: { songs: -1 } },
+        { session }
+      );
+
+      await UsageSong.deleteMany(
+        { usage: { $in: usageIdsToRemove }, song: songId },
+        { session }
+      );
+
+      song.usage = song.usage.filter(
+        (usage: mongoose.Types.ObjectId) =>
+          !usageIdsToRemove.some((id: mongoose.Types.ObjectId) =>
+            id.equals(usage._id)
+          )
+      );
+    }
+
+    if (newUsageDocuments.length > 0) {
+      await UsageSong.insertMany(newUsageDocuments, { session });
+    }
+
+    // ==============================
+    // Tag editing
+    // ==============================
 
     const tagsToAdd = tags.filter(
       (tag) =>
@@ -201,7 +295,7 @@ export async function getSong(
   const { songId } = validationResult.params!;
 
   try {
-    const song = await Song.findById(songId).populate("tags");
+    const song = await Song.findById(songId).populate("tags").populate("usage");
 
     if (!song) {
       throw new Error("Song not found");
@@ -237,7 +331,7 @@ export async function getSongs(
   if (query) {
     filterQuery.$or = [
       { title: { $regex: new RegExp(query, "i") } },
-      { content: { $regex: new RegExp(query, "i") } },
+      { notes: { $regex: new RegExp(query, "i") } },
     ];
   }
 
@@ -263,6 +357,7 @@ export async function getSongs(
     const totalSongs = await Song.countDocuments(filterQuery);
     const songs = await Song.find(filterQuery)
       .populate("tags", "name")
+      .populate("usage", "name")
       .populate("author", "name image")
       .lean()
       .sort(sortCriteria)

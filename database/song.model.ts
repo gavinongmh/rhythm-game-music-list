@@ -2,7 +2,7 @@ import { Schema, models, model, Types, Document } from "mongoose";
 
 export interface ISong {
   title: string;
-  description: string;
+  notes: string;
   tags: Types.ObjectId[];
   usage: Types.ObjectId[];
   views: number;
@@ -17,7 +17,7 @@ export interface ISongDoc extends ISong, Document {}
 const SongSchema = new Schema<ISong>(
   {
     title: { type: String, required: true },
-    description: { type: String, required: true },
+    notes: { type: String, required: true },
     usage: [{ type: Schema.Types.ObjectId, ref: "Usage" }],
     tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
     views: { type: Number, default: 0 },

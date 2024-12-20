@@ -5,7 +5,7 @@ export interface ITagSong {
   song: Types.ObjectId;
 }
 
-export interface ITagQuestionDoc extends ITagSong, Document {}
+export interface ITagSongDoc extends ITagSong, Document {}
 
 const TagSongSchema = new Schema<ITagSong>(
   {

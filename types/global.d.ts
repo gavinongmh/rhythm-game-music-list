@@ -3,6 +3,15 @@ interface Tag {
   name: string;
 }
 
+interface Usage {
+  _id: string;
+  name:
+    | "commercial"
+    | "non-commercial"
+    | "commercial-official"
+    | "non-commercial-official";
+}
+
 interface Artist {
   _id: string;
   name: string;
@@ -18,9 +27,10 @@ interface Author {
 interface Song {
   _id: string;
   title: string;
-  content: string;
+  notes: string;
   tags: Tag[];
   artists: Artist[];
+  usage: Usage[];
   author: Author;
   createdAt: Date;
   upvotes: number;

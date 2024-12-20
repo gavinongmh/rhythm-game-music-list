@@ -18,8 +18,14 @@ interface AuthCredentials {
 
 interface AddSongParams {
   title: string;
-  content: string;
+  notes: string;
   tags: string[];
+  usage: (
+    | "commercial"
+    | "non-commercial"
+    | "commercial-official"
+    | "non-commercial-official"
+  )[];
 }
 
 interface EditSongParams extends AddSongParams {

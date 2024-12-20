@@ -3,7 +3,7 @@ import { Schema, models, model, Types, Document } from "mongoose";
 export interface IComment {
   author: Types.ObjectId;
   song: Types.ObjectId;
-  content: string;
+  notes: string;
   upvotes: number;
   downvotes: number;
 }
@@ -14,7 +14,7 @@ const CommentSchema = new Schema<IComment>(
   {
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
     song: { type: Schema.Types.ObjectId, ref: "Song", required: true },
-    content: { type: String, required: true },
+    notes: { type: String, required: true },
     upvotes: { type: Number, default: 0 },
     downvotes: { type: Number, default: 0 },
   },
