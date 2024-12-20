@@ -2,6 +2,8 @@
 
 import mongoose, { FilterQuery } from "mongoose";
 
+import ArtistSong from "@/database/artist-song.model";
+import Artist, { IArtistDoc } from "@/database/artist.model";
 import Song, { ISongDoc } from "@/database/song.model";
 import TagSong from "@/database/tag-song.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
@@ -30,7 +32,7 @@ export async function addSong(
     return handleError(validationResult) as ErrorResponse;
   }
 
-  const { title, notes, tags, usage } = validationResult.params!;
+  const { title, notes, tags, artists, usage } = validationResult.params!;
   const userId = validationResult?.session?.user?.id;
 
   const session = await mongoose.startSession();
@@ -43,6 +45,38 @@ export async function addSong(
     if (!song) {
       throw new Error("Failed to create song");
     }
+
+    // ==============================
+    // Artists adding
+    // ==============================
+
+    const artistIds: mongoose.Types.ObjectId[] = [];
+    const artistSongDocuments = [];
+
+    for (const artist of artists) {
+      const existingArtist = await Artist.findOneAndUpdate(
+        { name: { $regex: new RegExp(`^${artist}$`, "i") } },
+        { $setOnInsert: { name: artist }, $inc: { songs: 1 } },
+        { upsert: true, new: true, session }
+      );
+
+      artistIds.push(existingArtist._id);
+      artistSongDocuments.push({
+        artist: existingArtist._id,
+        song: song._id,
+      });
+    }
+    await ArtistSong.insertMany(artistSongDocuments, { session });
+
+    await Song.findByIdAndUpdate(
+      song._id,
+      { $push: { artists: { $each: artistIds } } },
+      { session }
+    );
+
+    // ==============================
+    // Usage adding
+    // ==============================
 
     const usageIds: mongoose.Types.ObjectId[] = [];
     const usageSongDocuments = [];
@@ -67,6 +101,10 @@ export async function addSong(
       { $push: { usage: { $each: usageIds } } },
       { session }
     );
+
+    // ==============================
+    // Tag adding
+    // ==============================
 
     const tagIds: mongoose.Types.ObjectId[] = [];
     const tagSongDocuments = [];
@@ -118,14 +156,18 @@ export async function editSong(
     return handleError(validationResult) as ErrorResponse;
   }
 
-  const { title, notes, tags, songId, usage } = validationResult.params!;
+  const { title, notes, tags, songId, usage, artists } =
+    validationResult.params!;
   const userId = validationResult?.session?.user?.id;
 
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    const song = await Song.findById(songId).populate("tags").populate("usage");
+    const song = await Song.findById(songId)
+      .populate("tags")
+      .populate("usage")
+      .populate("artists");
 
     if (!song) {
       throw new Error("Song not found");
@@ -139,6 +181,70 @@ export async function editSong(
       song.title = title;
       song.notes = notes;
       await song.save({ session });
+    }
+
+    // ==============================
+    // Artist editing
+    // ==============================
+
+    const artistsToAdd = artists.filter(
+      (artist) =>
+        !song.artists.some((a: IArtistDoc) =>
+          a.name.toLowerCase().includes(artist.toLowerCase())
+        )
+    );
+    const artistsToRemove = song.artists.filter(
+      (artist: IArtistDoc) =>
+        !artists.some((a) => a.toLowerCase() === artist.name.toLowerCase())
+    );
+
+    const newArtistDocuments = [];
+
+    if (artistsToAdd.length > 0) {
+      for (const artist of artistsToAdd) {
+        const existingArtist = await Artist.findOneAndUpdate(
+          { name: { $regex: `^${artist}$`, $options: "i" } },
+          { $setOnInsert: { name: artist }, $inc: { songs: 1 } },
+          { upsert: true, new: true, session }
+        );
+
+        if (existingArtist) {
+          newArtistDocuments.push({
+            artist: existingArtist._id,
+            song: songId,
+          });
+
+          song.artists.push(existingArtist._id);
+        }
+      }
+    }
+
+    if (artistsToRemove.length > 0) {
+      const artistIdsToRemove = artistsToRemove.map(
+        (artist: IArtistDoc) => artist._id
+      );
+
+      await Artist.updateMany(
+        { _id: { $in: artistIdsToRemove } },
+        { $inc: { songs: -1 } },
+        { session }
+      );
+
+      await ArtistSong.deleteMany(
+        { artist: { $in: artistIdsToRemove }, song: songId },
+        { session }
+      );
+
+      song.artists = song.artists.filter(
+        (artist: mongoose.Types.ObjectId) =>
+          !artistIdsToRemove.some((id: mongoose.Types.ObjectId) =>
+            id.equals(artist._id)
+          )
+      );
+    }
+
+    if (newArtistDocuments.length > 0) {
+      await ArtistSong.insertMany(newArtistDocuments, { session });
     }
 
     // ==============================
@@ -295,7 +401,10 @@ export async function getSong(
   const { songId } = validationResult.params!;
 
   try {
-    const song = await Song.findById(songId).populate("tags").populate("usage");
+    const song = await Song.findById(songId)
+      .populate("tags")
+      .populate("usage")
+      .populate("artists");
 
     if (!song) {
       throw new Error("Song not found");
@@ -358,6 +467,7 @@ export async function getSongs(
     const songs = await Song.find(filterQuery)
       .populate("tags", "name")
       .populate("usage", "name")
+      .populate("artists", "name image")
       .populate("author", "name image")
       .lean()
       .sort(sortCriteria)

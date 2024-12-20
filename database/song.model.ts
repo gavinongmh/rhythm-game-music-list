@@ -4,6 +4,7 @@ export interface ISong {
   title: string;
   notes: string;
   tags: Types.ObjectId[];
+  artists: Types.ObjectId[];
   usage: Types.ObjectId[];
   views: number;
   comments: number;
@@ -20,6 +21,7 @@ const SongSchema = new Schema<ISong>(
     notes: { type: String, required: true },
     usage: [{ type: Schema.Types.ObjectId, ref: "Usage" }],
     tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
+    artists: [{ type: Schema.Types.ObjectId, ref: "Artist" }],
     views: { type: Number, default: 0 },
     comments: { type: Number, default: 0 },
     upvotes: { type: Number, default: 0 },

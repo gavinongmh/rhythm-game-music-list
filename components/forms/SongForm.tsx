@@ -57,7 +57,7 @@ const SongForm = ({ song, isEdit = false }: Params) => {
       notes: song?.notes || "",
       usage: song?.usage.map((use) => use.name) || [],
       tags: song?.tags.map((tag) => tag.name) || [],
-      artists: song?.artists?.map((artist) => artist.name) || [],
+      artists: song?.artists.map((artist) => artist.name) || [],
     },
   });
 
@@ -242,6 +242,8 @@ const SongForm = ({ song, isEdit = false }: Params) => {
                         >
                           <FormControl>
                             <Checkbox
+                              className="data-[state=checked]:bg-primary-500 data-[state=checked]:text-light-800
+                              dark:data-[state=checked]:bg-primary-500 dark:data-[state=checked]:text-light-800"
                               checked={field.value?.includes(use)}
                               onCheckedChange={(checked) => {
                                 return checked

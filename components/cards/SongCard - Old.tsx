@@ -38,7 +38,7 @@ const SongCard = ({
           imgUrl={author.image || "/icons/avatar.svg"}
           alt={author.name || "authorName"}
           value={author.name}
-          title={`• added ${getTimeStamp(createdAt)}`}
+          title={`• asked ${getTimeStamp(createdAt)}`}
           href={ROUTES.PROFILE(author._id)}
           textStyles="body-medium text-dark400_light700"
           isAuthor

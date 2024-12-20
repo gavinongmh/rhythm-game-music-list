@@ -26,6 +26,7 @@ interface AddSongParams {
     | "commercial-official"
     | "non-commercial-official"
   )[];
+  artists: string[];
 }
 
 interface EditSongParams extends AddSongParams {
