@@ -1,64 +1,101 @@
 <div align="center">
   <br />
-      <img src="./public/banner.png" alt="Project Banner" >
+      <img src="./public/banner.jpg" alt="Project Banner" >
   <br />
 
-  <div>
-    <img src="https://img.shields.io/badge/-TypeScript-black?style=for-the-badge&logoColor=white&logo=typescript&color=3178C6" alt="typescript" />
-    <img src="https://img.shields.io/badge/-Next_JS-black?style=for-the-badge&logoColor=white&logo=nextdotjs&color=000000" alt="nextdotjs" />
-    <img src="https://img.shields.io/badge/-Tailwind_CSS-black?style=for-the-badge&logoColor=white&logo=tailwindcss&color=06B6D4" alt="tailwindcss" />
-    <img src="https://img.shields.io/badge/-MongoDB-black?style=for-the-badge&logoColor=white&logo=mongodb&color=47A248" alt="mongodb" />
-    <img src="https://img.shields.io/badge/-ShadCN_UI-black?style=for-the-badge&logoColor=white&logo=shadcnui&color=000000" alt="shadcnui" />
-    <img src="https://img.shields.io/badge/-Open_AI-black?style=for-the-badge&logoColor=white&logo=openai&color=412991" alt="openai" />
-  </div>
-
-  <h3 align="center">BaseFlow Project Starter</h3>
+  <h3 align="center">Rhythm Game Music List</h3>
 
    <div align="center">
-     A template project designed to kickstart your full-stack applications with a modern tech stack.
+     A collection of songs that can be used in rhythm games.
     </div>
 </div>
 
 ## 📋 <a name="table">Table of Contents</a>
 
 1. 🤖 [Introduction](#introduction)
-2. ⚙️ [Tech Stack](#tech-stack)
-3. 🔋 [Features](#features)
+2. 🌟 [Planned Features](#planned-features)
+3. 🔋 [Features](#current-features)
 4. 🤸 [Quick Start](#quick-start)
 
 ## <a name="introduction">🤖 Introduction</a>
 
-BaseFlow is a comprehensive starter template designed to kickstart your full-stack applications with a modern tech stack. It is based on JavaScript Mastery's Ultimate Next.js Course and serves as a clean foundation for building scalable web apps. Whether you're working on a personal project or a production-grade application, BaseFlow provides all the essential features and tools to get started efficiently.
+# Rhythm Game Music List
 
-The project uses MongoDB for a robust database layer, NextAuth (Auth.js) for versatile authentication options (Email/Password, GitHub, Google), and sleek styling with TailwindCSS and ShadCN UI.
+**Rhythm Game Music List** is a community-driven platform designed to bridge the gap between rhythm game mappers and music artists. The website features a curated list of songs with explicit permission for use in rhythm games, making it easier for mappers to create legal and high-quality content while giving artists more opportunities to feature their work in rhythm games.
 
-## <a name="tech-stack">⚙️ Tech Stack</a>
+---
 
-BaseFlow leverages the following technologies:
+## <a name="planned-features">🌟 Planned Features</a>
 
-- **[Next.js](https://nextjs.org/):** Server-side rendering and static site generation.
-- **[TypeScript](https://www.typescriptlang.org/):** Strongly typed JavaScript for better developer experience.
-- **[Tailwind CSS](https://tailwindcss.com/):** Utility-first CSS framework.
-- **[MongoDB](https://www.mongodb.com/):** Flexible and scalable NoSQL database.
-- **[ShadCN UI](https://ui.shadcn.dev/):** Modern, reusable UI components.
+### Core Functionality
 
-## <a name="features">🔋 Features</a>
+- **Community-Curated Song List**: Explore a comprehensive database of songs that artists have explicitly permitted for use in rhythm games.
+- **Detailed Licensing Information**: Filter songs by licensing terms, such as:
+  - Commercial vs. non-commercial use
+  - Content creator-friendly (e.g., Twitch/YouTube stream-safe)
+  - Genre and other metadata
+- **Artist Licensing Terms**: Artists can share public licensing information, removing the hassle of finding usage terms.
+
+### For...
+
+- **Rhythm Game Mappers**: Individuals or teams looking to map songs without legal concerns.
+- **Artists**: Artists who want their music featured in rhythm games. They can list their songs, set terms of use, and gain exposure.
+
+---
+
+## 🚀 Stretch Goals
+
+1. **Personalized Profiles**:
+   - Mappers can showcase songs they’ve mapped.
+   - A recommendation system based on mapping history.
+2. **Artist Page Customization**:
+   - Allow artists to add links for direct support (e.g., Ko-Fi, Patreon, Bandcamp).
+3. **Game-Specific Filters**:
+   - Find songs specifically allowed for mapping in chosen rhythm games.
+4. **Artist-Driven Mapping Challenges**:
+   - Artists can set challenges to inspire creativity in the community.
+5. **Public API**:
+   - Enable rhythm games to retrieve and use song data directly.
+6. **Streamlined Artist Contact**:
+   - Automatically generate and send licensing requests to artists, ensuring no duplicate outreach while simplifying the mapper’s workflow.
+
+---
+
+## 🎯 Goals
+
+The platform aims to:
+
+- **Empower Mappers**: Simplify the process of finding songs for rhythm game mapping while respecting artist rights.
+- **Support Artists**: Provide exposure and promote fair usage of their music.
+
+By combining detailed licensing information, community contributions, and tools for collaboration, **Rhythm Game Music List** seeks to become an indispensable resource for the rhythm game community.
+
+---
+
+## 🤝 Get Involved
+
+This is a community-driven project, and we welcome contributions! Whether you're a developer, mapper, or artist, there's a way for you to get involved.
+
+- **Developers**: Help build new features or improve existing ones.
+- **Mappers**: Add music to the list and share insights on what makes the perfect mapper-friendly platform.
+- **Artists**: Add your music and help shape how licensing is displayed.
+
+---
+
+## <a name="current-features">🔋 Current Features</a>
+
+This project is in its early stages and was kickstarted from Javascript Mastery's 1 Million YouTube
+Subscribers Hackathon. As such, only the current features are available:
 
 👉 **Authentication**: Secure sign-in with NextAuth, supporting Email/Password, Google, and GitHub.
 
 👉 **Home Page**: Displays songs with filters, search, and pagination for easy navigation.
 
-👉 **Organized Layout**: Organized layout with popular questions and tags in view.
-
-👉 **Make a song**: Simple interface for making new songs.
-
-👉 **Global Search**: Find content across questions, users, tags, and more.
+👉 **Add a song**: Simple interface for adding new songs.
 
 👉 **Responsive Design**: Fully optimized for a seamless experience on desktops, tablets, and mobile devices.
 
 👉 **High Performance**: Fast loading and smooth interactions for an efficient user experience.
-
-and many more, including code architecture and reusability
 
 ## <a name="quick-start">🤸 Quick Start</a>
 
@@ -75,8 +112,8 @@ Make sure you have the following installed on your machine:
 **Cloning the Repository**
 
 ```bash
-git clone https://github.com/gavinongmh/baseflow.git
-cd baseflow
+git clone https://github.com/gavinongmh/rhythm-game-music-list
+cd rhythm-game-music-list
 ```
 
 **Installation**
