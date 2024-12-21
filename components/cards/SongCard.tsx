@@ -52,14 +52,22 @@ const SongCard = ({
                 </span>
               </p>
               <div className="flex gap-3">
-                {tags.map((tag: Tag) => (
+                {tags.length > 0 && (
+                  <TagCard
+                    key={tags[0]._id}
+                    _id={tags[0]._id}
+                    name={tags[0].name}
+                    compact
+                  />
+                )}
+                {/* {tags.map((tag: Tag) => (
                   <TagCard
                     key={tag._id}
                     _id={tag._id}
                     name={tag.name}
                     compact
                   />
-                ))}
+                ))} */}
               </div>
             </div>
 
