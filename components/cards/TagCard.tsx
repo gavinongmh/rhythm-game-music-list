@@ -50,7 +50,7 @@ const TagCard = ({
         className={`subtle-medium text-light400_light500 flex flex-row gap-2 rounded-md border-none px-3 py-1.5 uppercase ${!isUsage ? "background-light800_dark300" : "background-commercial opacity-80"}`}
       >
         <div className="flex-center space-x-2">
-          {!isUsage && <i className={`${iconClass} text-sm`}></i>}
+          {/* {!isUsage && <i className={`${iconClass} text-sm`}></i>} */}
           <span>{name}</span>
         </div>
         {remove && (

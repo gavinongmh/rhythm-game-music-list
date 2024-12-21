@@ -44,12 +44,25 @@ const SongCard = ({
         <div className="absolute inset-0 bg-dark-200 opacity-50"></div>
         <div className="relative flex flex-row items-center justify-center px-3 py-1.5 text-light-700">
           <div className="flex w-full flex-col items-start justify-center">
-            <p className="sm:h3-semibold base-semibold text-light-900 shadow-dark-200 text-shadow-sm">
-              {title}
-              <span className="text-xs opacity-80">
-                {artists && artists.length > 0 ? " - " + artists[0].name : ""}
-              </span>
-            </p>
+            <div className="flex w-full justify-between">
+              <p className="sm:h3-semibold base-semibold text-light-900 shadow-dark-200 text-shadow-sm">
+                {title}
+                <span className="text-xs opacity-80">
+                  {artists && artists.length > 0 ? " - " + artists[0].name : ""}
+                </span>
+              </p>
+              <div className="flex gap-3">
+                {tags.map((tag: Tag) => (
+                  <TagCard
+                    key={tag._id}
+                    _id={tag._id}
+                    name={tag.name}
+                    compact
+                  />
+                ))}
+              </div>
+            </div>
+
             <div className="flex w-full flex-wrap gap-2">
               {usage.map((use: Usage) => (
                 <TagCard
