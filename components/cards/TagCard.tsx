@@ -2,7 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import ROUTES from "@/constants/routes";
+import { usageTooltipMap } from "@/lib/usageMap";
 import { getDeviconClassName } from "@/lib/utils";
 
 import { Badge } from "../ui/badge";
@@ -62,15 +69,32 @@ const TagCard = ({
       )}
     </>
   );
+
+  const ButtonContent = (
+    <>
+      {isButton ? (
+        <button onClick={handleClick} className="flex justify-between gap-2">
+          {Content}
+        </button>
+      ) : (
+        <Link href={ROUTES.TAG(_id)} className="flex justify-between gap-2">
+          {Content}
+        </Link>
+      )}
+    </>
+  );
   if (compact) {
-    return isButton ? (
-      <button onClick={handleClick} className="flex justify-between gap-2">
-        {Content}
-      </button>
+    return isUsage && usageTooltipMap[name] ? (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>{ButtonContent}</TooltipTrigger>
+          <TooltipContent>
+            <p>{usageTooltipMap[name]}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     ) : (
-      <Link href={ROUTES.TAG(_id)} className="flex justify-between gap-2">
-        {Content}
-      </Link>
+      ButtonContent
     );
   }
 };

@@ -441,6 +441,7 @@ export async function getSongs(
     filterQuery.$or = [
       { title: { $regex: new RegExp(query, "i") } },
       { notes: { $regex: new RegExp(query, "i") } },
+      { "artists.name": { $regex: new RegExp(query, "i") } },
     ];
   }
 
