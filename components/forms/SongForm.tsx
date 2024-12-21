@@ -38,13 +38,13 @@ interface Params {
   isEdit?: boolean;
 }
 
-const usageOptions = [
+// Provide the union type to the array
+const usageOptions: UsageOption[] = [
   "non-commercial",
   "non-commercial-official",
   "commercial",
   "commercial-official",
 ];
-
 const SongForm = ({ song, isEdit = false }: Params) => {
   const router = useRouter();
   const editorRef = useRef<MDXEditorMethods>(null);

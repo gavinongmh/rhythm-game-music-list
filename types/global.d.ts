@@ -68,3 +68,9 @@ interface PaginatedSearchParams {
   filter?: string;
   sort?: string;
 }
+
+type UsageOption =
+  | "commercial"
+  | "non-commercial"
+  | "commercial-official"
+  | "non-commercial-official";
