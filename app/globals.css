@@ -223,8 +223,12 @@ body {
     @apply shadow-light-100 dark:shadow-none;
   }
 
-  .primary-gradient {
+  /* .primary-gradient {
     background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
+  } */
+
+  .primary-gradient {
+    background: linear-gradient(129deg, #6d28d9 0%, #c4b5fd 100%);
   }
 
   .dark-gradient {

@@ -6,6 +6,7 @@ export interface ISong {
   tags: Types.ObjectId[];
   artists: Types.ObjectId[];
   usage: Types.ObjectId[];
+  image?: string;
   views: number;
   comments: number;
   upvotes: number;
@@ -22,6 +23,7 @@ const SongSchema = new Schema<ISong>(
     usage: [{ type: Schema.Types.ObjectId, ref: "Usage" }],
     tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
     artists: [{ type: Schema.Types.ObjectId, ref: "Artist" }],
+    image: { type: String },
     views: { type: Number, default: 0 },
     comments: { type: Number, default: 0 },
     upvotes: { type: Number, default: 0 },

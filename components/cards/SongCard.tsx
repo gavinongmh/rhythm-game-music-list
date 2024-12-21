@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 
 import ROUTES from "@/constants/routes";
+import { songUsageMap } from "@/lib/usageMap";
 import { getTimeStamp } from "@/lib/utils";
 
 import TagCard from "./TagCard";
@@ -37,7 +38,7 @@ const SongCard = ({
           fill
           objectFit="cover"
           objectPosition="center"
-          src="/images/mio-satella-full.jpg"
+          src={`${songUsageMap[title.toLowerCase()] ? songUsageMap[title.toLowerCase()] : "/images/mio-satella-full.jpg"}`}
           alt="artist"
         />
         <div className="absolute inset-0 bg-dark-200 opacity-50"></div>

@@ -85,7 +85,7 @@ This is a community-driven project, and we welcome contributions! Whether you're
 ## <a name="current-features">🔋 Current Features</a>
 
 This project is in its early stages and was kickstarted from Javascript Mastery's 1 Million YouTube
-Subscribers Hackathon. As such, only the current features are available:
+Subscribers Hackathon. It also based on JS Mastery's Ultimate Next15 course, which I recommend you to check out! As such, only the current features are available:
 
 👉 **Authentication**: Secure sign-in with NextAuth, supporting Email/Password, Google, and GitHub.
 

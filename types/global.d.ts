@@ -28,6 +28,7 @@ interface Song {
   _id: string;
   title: string;
   notes: string;
+  image: string;
   tags: Tag[];
   artists: Artist[];
   usage: Usage[];
