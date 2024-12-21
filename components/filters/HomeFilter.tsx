@@ -9,15 +9,19 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
 const filters = [
+  { name: "Commercial", value: "commercial" },
+  { name: "Non-commercial", value: "non-commercial" },
+  { name: "Commercial + official use", value: "commercial-official" },
+  { name: "Non-commercial + official use", value: "non-commercial-official" },
   //   { name: "Newest", value: "newest" },
   //   { name: "Popular", value: "popular" },
   //   { name: "Unanswered", value: "unanswered" },
   //   { name: "Recommended", value: "recommended" },
-  { name: "Suggestion", value: "suggestion" },
-  { name: "Mapping", value: "mapping" },
-  { name: "Gameplay", value: "gameplay" },
-  { name: "Bug", value: "bug" },
-  { name: "Feedback", value: "feedback" },
+  // { name: "Suggestion", value: "suggestion" },
+  // { name: "Mapping", value: "mapping" },
+  // { name: "Gameplay", value: "gameplay" },
+  // { name: "Bug", value: "bug" },
+  // { name: "Feedback", value: "feedback" },
 ];
 
 const HomeFilter = () => {

@@ -445,6 +445,23 @@ export async function getSongs(
     ];
   }
 
+  // 3) Handle filters that specifically target usage.name
+  if (filter === "commercial" || filter === "non-commercial") {
+    // Find the Usage doc with that name (case-insensitive)
+    const usageDoc = (await Usage.findOne({
+      name: { $regex: `^${filter}$`, $options: "i" },
+    })
+      .lean()
+      .exec()) as IUsageDoc | null;
+
+    // If no usage doc found, we can continue like the filter wasn't pressed.
+    // Otherwise, filter songs whose usage array includes that usage doc ID
+    if (usageDoc) {
+      console.log("Found usage doc");
+      filterQuery.usage = usageDoc._id;
+    }
+  }
+
   let sortCriteria = {};
 
   switch (filter) {
