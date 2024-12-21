@@ -51,6 +51,14 @@ body {
     @apply bg-light-800 dark:bg-dark-200;
   }
 
+  .background-commercial {
+    @apply bg-amber-100 dark:bg-amber-100 !important;
+  }
+
+  .background-noncommercial {
+    @apply bg-amber-500 dark:bg-amber-500 !important;
+  }
+
   .background-dark400_light900 {
     @apply dark:bg-dark-400 bg-light-900 !important;
   }

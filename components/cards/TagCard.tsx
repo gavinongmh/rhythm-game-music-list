@@ -15,6 +15,7 @@ interface Props {
   compact?: boolean;
   remove?: boolean;
   isButton?: boolean;
+  isUsage?: boolean;
   handleRemove?: () => void;
 }
 
@@ -24,6 +25,7 @@ const TagCard = ({
   songs,
   showCount,
   compact,
+  isUsage,
   remove,
   isButton,
   handleRemove,
@@ -37,9 +39,11 @@ const TagCard = ({
   const Content = (
     <>
       {" "}
-      <Badge className="subtle-medium background-light800_dark300 text-light400_light500 flex flex-row gap-2 rounded-md border-none px-4 py-2 uppercase">
+      <Badge
+        className={`subtle-medium text-light400_light500 flex flex-row gap-2 rounded-md border-none px-3 py-1.5 uppercase ${!isUsage ? "background-light800_dark300" : "background-commercial opacity-80"}`}
+      >
         <div className="flex-center space-x-2">
-          <i className={`${iconClass} text-sm`}></i>
+          {!isUsage && <i className={`${iconClass} text-sm`}></i>}
           <span>{name}</span>
         </div>
         {remove && (

@@ -18,6 +18,7 @@ const SongCard = ({
     _id,
     title,
     tags,
+    usage,
     author,
     artists,
     createdAt,
@@ -28,7 +29,9 @@ const SongCard = ({
 }: Props) => {
   return (
     <div className="flex h-16 w-full flex-row overflow-hidden rounded-lg bg-primary-500">
-      <div className="text-dark400_light700 flex size-12 items-center justify-center"></div>
+      <div className="text-dark400_light700 relative flex size-16 items-center justify-center">
+        <Image width={24} height={24} src="/icons/play.svg" alt="play" />
+      </div>
       <div className="relative h-16 w-full overflow-hidden rounded-lg">
         <Image
           fill
@@ -38,17 +41,23 @@ const SongCard = ({
           alt="artist"
         />
         <div className="absolute inset-0 bg-dark-200 opacity-50"></div>
-        <div className="text-dark400_light700 relative flex flex-row items-center justify-center px-3 py-1.5">
+        <div className="relative flex flex-row items-center justify-center px-3 py-1.5 text-light-700">
           <div className="flex w-full flex-col items-start justify-center">
-            <p className="sm:h3-semibold base-semibold text-dark200_light900">
+            <p className="sm:h3-semibold base-semibold text-light-900 shadow-dark-200 text-shadow-sm">
               {title}
               <span className="text-xs opacity-80">
                 {artists && artists.length > 0 ? " - " + artists[0].name : ""}
               </span>
             </p>
             <div className="flex w-full flex-wrap gap-2">
-              {tags.map((tag: Tag) => (
-                <TagCard key={tag._id} _id={tag._id} name={tag.name} compact />
+              {usage.map((use: Usage) => (
+                <TagCard
+                  key={use._id}
+                  _id={use._id}
+                  name={use.name}
+                  compact
+                  isUsage
+                />
               ))}
             </div>
           </div>

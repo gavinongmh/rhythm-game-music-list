@@ -18,7 +18,7 @@ interface Props {
   handleRemove?: () => void;
 }
 
-const TagCard = ({
+const UsageCard = ({
   _id,
   name,
   songs,
@@ -37,7 +37,7 @@ const TagCard = ({
   const Content = (
     <>
       {" "}
-      <Badge className="subtle-medium background-light800_dark300 text-light400_light500 flex flex-row gap-2 rounded-md border-none px-4 py-2 uppercase">
+      <Badge className="subtle-medium text-light400_light500 background-commercial flex flex-row gap-2 rounded-md border-none px-4 py-2 uppercase">
         <div className="flex-center space-x-2">
           <i className={`${iconClass} text-sm`}></i>
           <span>{name}</span>
@@ -71,4 +71,4 @@ const TagCard = ({
   }
 };
 
-export default TagCard;
+export default UsageCard;
