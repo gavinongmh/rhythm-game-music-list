@@ -446,7 +446,13 @@ export async function getSongs(
   }
 
   // 3) Handle filters that specifically target usage.name
-  if (filter === "commercial" || filter === "non-commercial") {
+  // TBD: Refactor into hashset check or whatever the JS equivalent of a set is
+  if (
+    filter === "commercial" ||
+    filter === "non-commercial" ||
+    filter === "non-commercial-official" ||
+    filter === "commercial-official"
+  ) {
     // Find the Usage doc with that name (case-insensitive)
     const usageDoc = (await Usage.findOne({
       name: { $regex: `^${filter}$`, $options: "i" },
