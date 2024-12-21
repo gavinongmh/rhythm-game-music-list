@@ -49,6 +49,7 @@ const config: Config = {
       backgroundImage: {
         "auth-dark": 'url("/images/auth-dark.jpg")',
         "auth-light": 'url("/images/auth-light.jpg")',
+        "placeholder-song": 'url("/images/mio-satella-full.jpg")',
       },
       screens: {
         xs: "420px",
